@@ -9,12 +9,21 @@ description = "Intelligent Python debugging library – explains errors, identif
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "Aravind Adityaa M", email = "aravindadityaa912006@gmail.com" }]
+maintainers = [{ name = "Aravind Adityaa M", email = "aravindadityaa912006@gmail.com" }]
 keywords = [
-    "debugging", "error", "exception", "traceback", "analysis",
-    "fix", "beginner", "developer", "cli", "diagnostics"
+    "python",
+    "debugging",
+    "exceptions",
+    "traceback",
+    "ast",
+    "cli",
+    "developer-tools",
+    "static-analysis",
+    "security",
+    "error-analysis"
 ]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
     "License :: OSI Approved :: MIT License",
@@ -54,6 +63,10 @@ Repository = "https://github.com/aravindadityxa/codemedic"
 Documentation = "https://github.com/aravindadityxa/codemedic#readme"
 "Bug Tracker" = "https://github.com/aravindadityxa/codemedic/issues"
 Changelog = "https://github.com/aravindadityxa/codemedic/blob/main/CHANGELOG.md"
+Releases = "https://github.com/aravindadityxa/codemedic/releases"
+
+[tool.setuptools]
+license-files = ["LICENSE"]
 
 [tool.setuptools.packages.find]
 include = ["codemedic*"]
