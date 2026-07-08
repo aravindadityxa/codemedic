@@ -1,0 +1,93 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codemedic"
+version = "1.0.0"
+description = "Intelligent Python debugging library – explains errors, identifies root causes, and suggests fixes."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "CodeMedic Contributors" }]
+keywords = [
+    "debugging", "error", "exception", "traceback", "analysis",
+    "fix", "beginner", "developer", "cli", "diagnostics"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Debuggers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Education",
+    "Typing :: Typed",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "rich>=13.7.0",
+    "click>=8.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-cov>=5.0.0",
+    "mypy>=1.10.0",
+    "flake8>=7.0.0",
+    "black>=24.4.0",
+    "isort>=5.13.0",
+    "pre-commit>=3.7.0",
+]
+
+[project.scripts]
+codemedic = "codemedic.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/codemedic"
+Repository = "https://github.com/yourusername/codemedic"
+Documentation = "https://github.com/yourusername/codemedic#readme"
+"Bug Tracker" = "https://github.com/yourusername/codemedic/issues"
+Changelog = "https://github.com/yourusername/codemedic/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+include = ["codemedic*"]
+
+[tool.setuptools.package-data]
+codemedic = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["codemedic"]
+omit = ["tests/*", "examples/*", "docs/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 80
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.flake8]
+max-line-length = 100
+max-complexity = 12
+extend-ignore = ["E203", "W503"]
