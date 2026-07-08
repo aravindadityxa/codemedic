@@ -26,7 +26,7 @@ CLI::
 from __future__ import annotations
 
 __version__ = "1.0.0"
-__author__ = "CodeMedic Contributors"
+__author__ = "Aravind Adityaa M"
 __license__ = "MIT"
 
 from .analyzer import AnalysisIssue, CodeAnalyzer

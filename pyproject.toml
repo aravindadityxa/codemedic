@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Intelligent Python debugging library – explains errors, identifies root causes, and suggests fixes."
 readme = "README.md"
 license = { file = "LICENSE" }
-authors = [{ name = "CodeMedic Contributors" }]
+authors = [{ name = "Aravind Adityaa M", email = "aravindadityaa912006@gmail.com" }]
 keywords = [
     "debugging", "error", "exception", "traceback", "analysis",
     "fix", "beginner", "developer", "cli", "diagnostics"
@@ -49,11 +49,11 @@ dev = [
 codemedic = "codemedic.cli:cli"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/codemedic"
-Repository = "https://github.com/yourusername/codemedic"
-Documentation = "https://github.com/yourusername/codemedic#readme"
-"Bug Tracker" = "https://github.com/yourusername/codemedic/issues"
-Changelog = "https://github.com/yourusername/codemedic/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/aravindadityxa/codemedic"
+Repository = "https://github.com/aravindadityxa/codemedic"
+Documentation = "https://github.com/aravindadityxa/codemedic#readme"
+"Bug Tracker" = "https://github.com/aravindadityxa/codemedic/issues"
+Changelog = "https://github.com/aravindadityxa/codemedic/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 include = ["codemedic*"]

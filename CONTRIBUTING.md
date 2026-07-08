@@ -7,7 +7,7 @@ We welcome contributions. Here's how to get started.
 Clone the repository and install in development mode:
 
 ```bash
-git clone https://github.com/yourusername/codemedic
+git clone https://github.com/aravindadityxa/codemedic
 cd codemedic
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
@@ -99,7 +99,7 @@ Add tests in `tests/test_analyzer.py`.
 
 ## Reporting Bugs
 
-Open an issue at https://github.com/yourusername/codemedic/issues with:
+Open an issue at https://github.com/aravindadityxa/codemedic/issues with:
 
 - Python version
 - CodeMedic version (`codemedic version`)

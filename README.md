@@ -5,7 +5,7 @@ Intelligent Python debugging library. Explains errors in plain English, identifi
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/codemedic.svg)](https://pypi.org/project/codemedic/)
-[![Tests](https://github.com/yourusername/codemedic/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/codemedic/actions)
+[![Tests](https://github.com/aravindadityxa/codemedic/actions/workflows/ci.yml/badge.svg)](https://github.com/aravindadityxa/codemedic/actions)
 
 ## Features
 
