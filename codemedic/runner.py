@@ -154,7 +154,11 @@ class Runner:
             compiled = compile(code, filename, "exec")
         except SyntaxError as exc:
             exc_type = type(exc)
-            trace = self._trace_collector.collect_from_exception(exc_type, exc, exc.__traceback__)
+            trace = (
+                self._trace_collector.collect_from_exception(
+                    exc_type, exc, exc.__traceback__
+                )
+            )
             explanation = self._explanation_engine.explain(trace)
             fixes = self._fixer.suggest_fixes(trace)
             return RunResult(
@@ -183,7 +187,11 @@ class Runner:
             )
         except Exception as exc:  # noqa: BLE001
             exc_type, exc_value, exc_tb = sys.exc_info()
-            trace = self._trace_collector.collect_from_exception(exc_type, exc_value, exc_tb)  # type: ignore[arg-type]
+            trace = (
+                self._trace_collector.collect_from_exception(
+                    exc_type, exc_value, exc_tb
+                )
+            )  # type: ignore[arg-type]
             explanation = self._explanation_engine.explain(trace)
             fixes = self._fixer.suggest_fixes(trace)
             return RunResult(
@@ -215,7 +223,11 @@ class Runner:
             )
         except Exception as exc:  # noqa: BLE001
             exc_type, exc_value, exc_tb = sys.exc_info()
-            trace = self._trace_collector.collect_from_exception(exc_type, exc_value, exc_tb)  # type: ignore[arg-type]
+            trace = (
+                self._trace_collector.collect_from_exception(
+                    exc_type, exc_value, exc_tb
+                )
+            )  # type: ignore[arg-type]
             explanation = self._explanation_engine.explain(trace)
             fixes = self._fixer.suggest_fixes(trace)
             return RunResult(

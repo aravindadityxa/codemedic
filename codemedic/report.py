@@ -95,12 +95,17 @@ class ReportGenerator:
                     desc = self._esc(str(getattr(f, "description", "")))
                     sug = self._esc(str(getattr(f, "suggested_line", "")))
                     conf = f"{getattr(f, 'confidence', 0):.0%}"
-                rows += f"<tr><td>{ln}</td><td>{desc}</td><td><code>{sug}</code></td><td>{conf}</td></tr>"
-            fixes_html = f"""
-            <table>
-              <thead><tr><th>Line</th><th>Description</th><th>Suggested</th><th>Confidence</th></tr></thead>
-              <tbody>{rows}</tbody>
-            </table>"""
+                rows += (
+                    f"<tr><td>{ln}</td><td>{desc}</td>"
+                    f"<td><code>{sug}</code></td><td>{conf}</td></tr>"
+                )
+            fixes_html = (
+                "<table>\n"
+                "  <thead><tr><th>Line</th><th>Description</th>"
+                "<th>Suggested</th><th>Confidence</th></tr></thead>\n"
+                f"  <tbody>{rows}</tbody>\n"
+                "</table>"
+            )
         else:
             fixes_html = "<p><em>No specific fix suggestions generated.</em></p>"
 
@@ -117,97 +122,152 @@ class ReportGenerator:
                              f"<td class='sev-{severity}'>{severity.upper()}</td>"
                              f"<td>{category}</td>"
                              f"<td>{message}</td></tr>")
-            analysis_html = f"""
-            <table>
-              <thead><tr><th>Line</th><th>Severity</th><th>Category</th><th>Message</th></tr></thead>
-              <tbody>{rows}</tbody>
-            </table>"""
+            analysis_html = (
+                "<table>\n"
+                "  <thead><tr><th>Line</th><th>Severity</th>"
+                "<th>Category</th><th>Message</th></tr></thead>\n"
+                f"  <tbody>{rows}</tbody>\n"
+                "</table>"
+            )
 
         examples_html = ""
         if before and after:
-            examples_html = f"""
-            <div class="examples">
-              <div class="example before"><h3>❌ Before</h3><pre><code>{before}</code></pre></div>
-              <div class="example after"><h3>✅ After</h3><pre><code>{after}</code></pre></div>
-            </div>"""
+            examples_html = (
+                '<div class="examples">\n'
+                '  <div class="example before">'
+                "<h3>❌ Before</h3>"
+                f"<pre><code>{before}</code></pre></div>\n"
+                '  <div class="example after">'
+                "<h3>✅ After</h3>"
+                f"<pre><code>{after}</code></pre></div>\n"
+                "</div>"
+            )
 
-        return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CodeMedic Report – {error_type}</title>
-  <style>
-    *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
-    body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f1117; color: #e0e0e0; padding: 2rem; line-height: 1.6; }}
-    .container {{ max-width: 900px; margin: 0 auto; }}
-    h1 {{ color: #ff6b6b; font-size: 1.8rem; margin-bottom: 0.25rem; }}
-    h2 {{ color: #7bc8f6; margin: 1.5rem 0 0.5rem; font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 4px; }}
-    h3 {{ color: #c3c3c3; font-size: 1rem; margin-bottom: 0.4rem; }}
-    .card {{ background: #1a1d27; border-radius: 8px; padding: 1.2rem 1.5rem; margin: 1rem 0; border-left: 4px solid #444; }}
-    .card.error {{ border-color: #ff6b6b; }}
-    .card.info  {{ border-color: #7bc8f6; }}
-    .card.warn  {{ border-color: #ffd93d; }}
-    .card.fix   {{ border-color: #6bcb77; }}
-    .badge {{ display:inline-block; padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:600; }}
-    table {{ width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.9rem; }}
-    th, td {{ padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid #2a2d3a; }}
-    th {{ background: #1f2235; color: #7bc8f6; }}
-    pre, code {{ font-family: 'JetBrains Mono', Consolas, monospace; font-size: 0.85rem;
-                 background: #11131d; padding: 0.2em 0.4em; border-radius: 3px; }}
-    pre {{ padding: 1rem; overflow-x: auto; border-radius: 6px; }}
-    .examples {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }}
-    .example.before pre {{ border-left: 4px solid #ff6b6b; }}
-    .example.after  pre {{ border-left: 4px solid #6bcb77; }}
-    .meta {{ color: #666; font-size: 0.8rem; margin-top: 2rem; border-top: 1px solid #222; padding-top: 1rem; }}
-    .sev-error   {{ color: #ff6b6b; font-weight: 600; }}
-    .sev-warning {{ color: #ffd93d; font-weight: 600; }}
-    .sev-info    {{ color: #7bc8f6; }}
-  </style>
-</head>
-<body>
-<div class="container">
-  <h1>🚨 {error_type}</h1>
-  <p style="color:#aaa">{message}</p>
-
-  <div class="card error">
-    <h2>📖 What Happened</h2>
-    <p>{simple}</p>
-    {f'<p style="color:#aaa;font-style:italic;margin-top:0.5rem">💡 {analogy}</p>' if analogy else ''}
-  </div>
-
-  <div class="card warn">
-    <h2>🔍 Root Cause</h2>
-    <p><strong>File:</strong> {self._esc(str(root.get('file','N/A')))}</p>
-    <p><strong>Line:</strong> {root.get('line','N/A')}</p>
-    <p><strong>Function:</strong> {self._esc(str(root.get('function','N/A')))}</p>
-    <p><strong>Code:</strong> <code>{self._esc(str(root.get('code','')))}</code></p>
-  </div>
-
-  <div class="card info">
-    <h2>📚 How to Avoid</h2>
-    <p>{how_to}</p>
-  </div>
-
-  <div class="card fix">
-    <h2>🛠️ Suggested Fixes</h2>
-    {fixes_html}
-  </div>
-
-  {f'<div class="card info"><h2>💡 Code Examples</h2>{examples_html}</div>' if examples_html else ''}
-
-  {f'<div class="card"><h2>📊 Static Analysis ({len(analysis)} issues)</h2>{analysis_html}</div>' if analysis_html else ''}
-
-  {f'<div class="card"><h2>📄 Full Traceback</h2><pre>{tb}</pre></div>' if tb else ''}
-
-  <div class="meta">
-    <p>Generated by <strong>CodeMedic v{get_version()}</strong> on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-    <p>Python {sys.version} | {platform.system()} {platform.release()} | {platform.machine()}</p>
-  </div>
-</div>
-</body>
-</html>"""
+        return (
+            "<!DOCTYPE html>\n"
+            '<html lang="en">\n'
+            "<head>\n"
+            '  <meta charset="UTF-8">\n'
+            '  <meta name="viewport" '
+            'content="width=device-width, initial-scale=1.0">\n'
+            f"  <title>CodeMedic Report – {error_type}</title>\n"
+            "  <style>\n"
+            "    *, *::before, *::after "
+            "{ box-sizing: border-box; margin: 0; padding: 0; }\n"
+            "    body { font-family: -apple-system, BlinkMacSystemFont, "
+            "'Segoe UI', Roboto, sans-serif;\n"
+            "            background: #0f1117; color: #e0e0e0; padding: 2rem; "
+            "line-height: 1.6; }\n"
+            "    .container { max-width: 900px; margin: 0 auto; }\n"
+            "    h1 { color: #ff6b6b; font-size: 1.8rem; "
+            "margin-bottom: 0.25rem; }\n"
+            "    h2 { color: #7bc8f6; margin: 1.5rem 0 0.5rem; "
+            "font-size: 1.1rem; border-bottom: 1px solid #333; "
+            "padding-bottom: 4px; }\n"
+            "    h3 { color: #c3c3c3; font-size: 1rem; "
+            "margin-bottom: 0.4rem; }\n"
+            "    .card { background: #1a1d27; border-radius: 8px; "
+            "padding: 1.2rem 1.5rem; margin: 1rem 0; "
+            "border-left: 4px solid #444; }\n"
+            "    .card.error { border-color: #ff6b6b; }\n"
+            "    .card.info  { border-color: #7bc8f6; }\n"
+            "    .card.warn  { border-color: #ffd93d; }\n"
+            "    .card.fix   { border-color: #6bcb77; }\n"
+            "    .badge { display:inline-block; padding:2px 8px; "
+            "border-radius:4px; font-size:0.75rem; font-weight:600; }\n"
+            "    table { width: 100%; border-collapse: collapse; "
+            "margin-top: 0.5rem; font-size: 0.9rem; }\n"
+            "    th, td { padding: 0.5rem 0.75rem; text-align: left; "
+            "border-bottom: 1px solid #2a2d3a; }\n"
+            "    th { background: #1f2235; color: #7bc8f6; }\n"
+            "    pre, code { font-family: 'JetBrains Mono', Consolas, "
+            "monospace; font-size: 0.85rem;\n"
+            "                 background: #11131d; padding: 0.2em 0.4em; "
+            "border-radius: 3px; }\n"
+            "    pre { padding: 1rem; overflow-x: auto; "
+            "border-radius: 6px; }\n"
+            "    .examples { display: grid; "
+            "grid-template-columns: 1fr 1fr; gap: 1rem; "
+            "margin-top: 0.5rem; }\n"
+            "    .example.before pre { border-left: 4px solid #ff6b6b; }\n"
+            "    .example.after  pre { border-left: 4px solid #6bcb77; }\n"
+            "    .meta { color: #666; font-size: 0.8rem; margin-top: 2rem; "
+            "border-top: 1px solid #222; padding-top: 1rem; }\n"
+            "    .sev-error   { color: #ff6b6b; font-weight: 600; }\n"
+            "    .sev-warning { color: #ffd93d; font-weight: 600; }\n"
+            "    .sev-info    { color: #7bc8f6; }\n"
+            "  </style>\n"
+            "</head>\n"
+            "<body>\n"
+            "<div class=\"container\">\n"
+            f"  <h1>🚨 {error_type}</h1>\n"
+            f'  <p style="color:#aaa">{message}</p>\n'
+            "\n"
+            '  <div class="card error">\n'
+            "    <h2>📖 What Happened</h2>\n"
+            f"    <p>{simple}</p>\n"
+            "    "
+            + (
+                f'<p style="color:#aaa;font-style:italic;'
+                f'margin-top:0.5rem">💡 {analogy}</p>'
+                if analogy
+                else ""
+            )
+            + "\n"
+            "  </div>\n"
+            "\n"
+            '  <div class="card warn">\n'
+            "    <h2>🔍 Root Cause</h2>\n"
+            f"    <p><strong>File:</strong> "
+            f"{self._esc(str(root.get('file','N/A')))}</p>\n"
+            f"    <p><strong>Line:</strong> {root.get('line','N/A')}</p>\n"
+            f"    <p><strong>Function:</strong> "
+            f"{self._esc(str(root.get('function','N/A')))}</p>\n"
+            f"    <p><strong>Code:</strong> <code>"
+            f"{self._esc(str(root.get('code','')))}</code></p>\n"
+            "  </div>\n"
+            "\n"
+            '  <div class="card info">\n'
+            "    <h2>📚 How to Avoid</h2>\n"
+            f"    <p>{how_to}</p>\n"
+            "  </div>\n"
+            "\n"
+            '  <div class="card fix">\n'
+            "    <h2>🛠️ Suggested Fixes</h2>\n"
+            f"    {fixes_html}\n"
+            "  </div>\n"
+            "\n"
+            + (
+                f'  <div class="card info"><h2>💡 Code Examples</h2>'
+                f"{examples_html}</div>\n"
+                if examples_html
+                else ""
+            )
+            + (
+                f'  <div class="card"><h2>📊 Static Analysis '
+                f"({len(analysis)} issues)</h2>"
+                f"{analysis_html}</div>\n"
+                if analysis_html
+                else ""
+            )
+            + (
+                f'  <div class="card"><h2>📄 Full Traceback</h2>'
+                f"<pre>{tb}</pre></div>\n"
+                if tb
+                else ""
+            )
+            + '  <div class="meta">\n'
+            + "    <p>Generated by <strong>CodeMedic v"
+            + f"{get_version()}</strong> on "
+            + f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>\n"
+            + f"    <p>Python {sys.version} | "
+            + f"{platform.system()} {platform.release()} | "
+            + f"{platform.machine()}</p>\n"
+            "  </div>\n"
+            "</div>\n"
+            "</body>\n"
+            "</html>"
+        )
 
     def _generate_json(self, data: dict[str, Any], filename: Optional[str]) -> Path:
         base = filename or f"report_{self._ts()}"

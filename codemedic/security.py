@@ -128,7 +128,10 @@ class SecurityChecker(ast.NodeVisitor):
                 code="SEC005",
                 severity="medium",
                 message=f"'{func_name}' uses a weak hashing algorithm.",
-                recommendation="Use hashlib.sha256() or stronger for security-sensitive operations.",
+                recommendation=(
+                    "Use hashlib.sha256() or stronger for "
+                    "security-sensitive operations."
+                ),
             ))
 
         self.generic_visit(node)
@@ -142,7 +145,10 @@ class SecurityChecker(ast.NodeVisitor):
                     code="SEC006",
                     severity="medium",
                     message=f"'{alias.name}' uses unencrypted protocols.",
-                    recommendation="Prefer SSH (paramiko) or SFTP for secure communication.",
+                    recommendation=(
+                        "Prefer SSH (paramiko) or SFTP for "
+                        "secure communication."
+                    ),
                 ))
         self.generic_visit(node)
 
