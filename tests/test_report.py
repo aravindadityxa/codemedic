@@ -10,7 +10,6 @@ import pytest
 from codemedic.config import Config
 from codemedic.report import ReportGenerator
 
-
 SAMPLE_DATA = {
     "error_type": "TypeError",
     "message": "can only concatenate str (not 'int') to str",

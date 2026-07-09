@@ -37,7 +37,7 @@ from .explanations import ExplanationEngine
 from .fixer import Fixer, PatchSuggestion
 from .formatter import Formatter
 from .report import ReportGenerator
-from .runner import RunResult, Runner
+from .runner import Runner, RunResult
 from .security import SecurityChecker, SecurityWarning, check_file, check_source
 from .trace import StackFrame, TraceCollector, TraceResult
 from .utils import get_version, indent, setup_logging

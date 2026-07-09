@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from codemedic.runner import RunResult, Runner
+from codemedic.runner import Runner, RunResult
 
 
 class TestRunCode:

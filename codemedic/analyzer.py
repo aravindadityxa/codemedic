@@ -139,25 +139,61 @@ class _AnalyzerVisitor(ast.NodeVisitor):
 
     def _check_function(self, node: ast.FunctionDef) -> None:
         if node.name in self._function_names:
-            self._add(node, f"Duplicate function definition: '{node.name}'.", "warning", "duplicate_function")
+            self._add(
+                node,
+                f"Duplicate function definition: '{node.name}'.",
+                "warning",
+                "duplicate_function",
+            )
         self._function_names.add(node.name)
 
-        if not (node.body and isinstance(node.body[0], ast.Expr)
-                and isinstance(node.body[0].value, ast.Constant)
-                and isinstance(node.body[0].value.value, str)):
-            self._add(node, f"Function '{node.name}' is missing a docstring.", "info", "missing_docstring")
+        if not (
+            node.body
+            and isinstance(node.body[0], ast.Expr)
+            and isinstance(node.body[0].value, ast.Constant)
+            and isinstance(node.body[0].value.value, str)
+        ):
+            self._add(
+                node,
+                f"Function '{node.name}' is missing a docstring.",
+                "info",
+                "missing_docstring",
+            )
 
         if node.returns is None and node.name not in ("__init__", "__new__"):
-            self._add(node, f"Function '{node.name}' is missing a return type annotation.", "info", "missing_type_hint")
+            self._add(
+                node,
+                f"Function '{node.name}' is missing a return type annotation.",
+                "info",
+                "missing_type_hint",
+            )
 
         end_line = getattr(node, "end_lineno", node.lineno)
         func_len = end_line - node.lineno
         if func_len > self.MAX_FUNCTION_LINES:
-            self._add(node, f"Function '{node.name}' is {func_len} lines long (>{self.MAX_FUNCTION_LINES}). Consider refactoring.", "warning", "long_function")
+            self._add(
+                node,
+                (
+                    f"Function '{node.name}' is {func_len} lines long "
+                    f"(>{self.MAX_FUNCTION_LINES}). Consider refactoring."
+                ),
+                "warning",
+                "long_function",
+            )
 
         for default in node.args.defaults + node.args.kw_defaults:
-            if default is not None and isinstance(default, (ast.List, ast.Dict, ast.Set)):
-                self._add(node, f"Function '{node.name}' uses a mutable default argument. Use None and initialise inside.", "warning", "mutable_default_arg")
+            if default is not None and isinstance(
+                default, (ast.List, ast.Dict, ast.Set)
+            ):
+                self._add(
+                    node,
+                    (
+                        f"Function '{node.name}' uses a mutable default "
+                        "argument. Use None and initialise inside."
+                    ),
+                    "warning",
+                    "mutable_default_arg",
+                )
 
         self._check_unused_vars(node)
         self._check_recursion_risk(node)
@@ -169,25 +205,51 @@ class _AnalyzerVisitor(ast.NodeVisitor):
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         if node.name in self._class_names:
-            self._add(node, f"Duplicate class definition: '{node.name}'.", "warning", "duplicate_class")
+            self._add(
+                node,
+                f"Duplicate class definition: '{node.name}'.",
+                "warning",
+                "duplicate_class",
+            )
         self._class_names.add(node.name)
 
-        if not (node.body and isinstance(node.body[0], ast.Expr)
-                and isinstance(node.body[0].value, ast.Constant)
-                and isinstance(node.body[0].value.value, str)):
-            self._add(node, f"Class '{node.name}' is missing a docstring.", "info", "missing_docstring")
+        if not (
+            node.body
+            and isinstance(node.body[0], ast.Expr)
+            and isinstance(node.body[0].value, ast.Constant)
+            and isinstance(node.body[0].value.value, str)
+        ):
+            self._add(
+                node,
+                f"Class '{node.name}' is missing a docstring.",
+                "info",
+                "missing_docstring",
+            )
 
         self.generic_visit(node)
 
     def visit_ExceptHandler(self, node: ast.ExceptHandler) -> None:
         if node.type is None:
-            self._add(node, "Bare 'except:' clause catches all exceptions including SystemExit and KeyboardInterrupt. Use 'except Exception:'.", "warning", "bare_except")
+            self._add(
+                node,
+                (
+                    "Bare 'except:' clause catches all exceptions including "
+                    "SystemExit and KeyboardInterrupt. Use 'except Exception:'."
+                ),
+                "warning",
+                "bare_except",
+            )
 
         # Empty except body (only 'pass' or ellipsis)
         if all(isinstance(stmt, (ast.Pass, ast.Expr)) for stmt in node.body):
             body_strs = [ast.dump(s) for s in node.body]
             if all("Pass" in s or "Constant(value=Ellipsis" in s for s in body_strs):
-                self._add(node, "Empty except block silently swallows exceptions.", "warning", "empty_except")
+                self._add(
+                    node,
+                    "Empty except block silently swallows exceptions.",
+                    "warning",
+                    "empty_except",
+                )
 
         self.generic_visit(node)
 
@@ -197,7 +259,15 @@ class _AnalyzerVisitor(ast.NodeVisitor):
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
         for alias in node.names:
             if alias.name == "*":
-                self._add(node, f"Wildcard import 'from {node.module} import *' pollutes the namespace.", "warning", "wildcard_import")
+                self._add(
+                    node,
+                    (
+                        f"Wildcard import 'from {node.module} import *' "
+                        "pollutes the namespace."
+                    ),
+                    "warning",
+                    "wildcard_import",
+                )
         self.generic_visit(node)
 
     def visit_Return(self, node: ast.Return) -> None:
@@ -236,11 +306,11 @@ class _AnalyzerVisitor(ast.NodeVisitor):
             ))
 
     def _check_recursion_risk(self, func_node: ast.FunctionDef) -> None:
-        """Warn if a function calls itself directly with no conditional guard.
+        """Warn if a function calls itself with no conditional guard.
 
-        A function is considered risky when it calls itself recursively but the
-        recursive call is not protected by any ``if``/``elif`` conditional that
-        could act as a base case.
+        A function is considered risky when it calls itself recursively but
+        the recursive call is not protected by any ``if``/``elif`` conditional
+        that could act as a base case.
         """
         calls_self = False
         has_conditional_guard = False
@@ -254,14 +324,17 @@ class _AnalyzerVisitor(ast.NodeVisitor):
                     name = child.func.attr
                 if name == func_node.name:
                     calls_self = True
-            # An If node at the top level of the function body is a potential guard.
+            # An If node at the top level of the function body is a guard.
             if isinstance(child, ast.If):
                 has_conditional_guard = True
 
         if calls_self and not has_conditional_guard:
             self._add(
                 func_node,
-                f"Function '{func_node.name}' calls itself with no conditional guard – potential infinite recursion.",
+                (
+                    f"Function '{func_node.name}' calls itself with no "
+                    "conditional guard – potential infinite recursion."
+                ),
                 "warning",
                 "infinite_recursion_risk",
             )
@@ -271,13 +344,24 @@ class _AnalyzerVisitor(ast.NodeVisitor):
             self.issues.append(AnalysisIssue(
                 line=getattr(node, "lineno", 0),
                 column=0,
-                message=f"Code nesting depth exceeds {self.MAX_NESTING_DEPTH} levels. Consider extracting into functions.",
+                message=(
+                    f"Code nesting depth exceeds {self.MAX_NESTING_DEPTH} "
+                    "levels. Consider extracting into functions."
+                ),
                 severity="warning",
                 category="deep_nesting",
             ))
             return
-        nesting_nodes = (ast.If, ast.For, ast.While, ast.With, ast.Try,
-                         ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+        nesting_nodes = (
+            ast.If,
+            ast.For,
+            ast.While,
+            ast.With,
+            ast.Try,
+            ast.FunctionDef,
+            ast.AsyncFunctionDef,
+            ast.ClassDef,
+        )
         if isinstance(node, nesting_nodes):
             for child in ast.iter_child_nodes(node):
                 self._check_nesting(child, depth + 1)

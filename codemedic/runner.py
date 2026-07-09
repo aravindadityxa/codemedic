@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
 
-from .analyzer import CodeAnalyzer, AnalysisIssue
+from .analyzer import AnalysisIssue, CodeAnalyzer
 from .config import Config
 from .explanations import ExplanationEngine
 from .fixer import Fixer, PatchSuggestion
@@ -45,29 +45,60 @@ class RunResult:
 
     def to_dict(self) -> dict[str, Any]:
         """Serialise to a plain dictionary (safe for JSON)."""
-        root = self.explanation.get("root_cause", {}) if self.explanation else {}
-        return {
+        root = (
+            self.explanation.get("root_cause", {})
+            if self.explanation
+            else {}
+        )
+        result = {
             "success": self.success,
             "error_type": self.trace.exception_type if self.trace else None,
             "message": self.trace.exception_message if self.trace else None,
-            "what_happened": self.explanation.get("what_happened", "") if self.explanation else "",
-            "why_happened": self.explanation.get("why_happened", "") if self.explanation else "",
-            "simple_explanation": self.explanation.get("simple_explanation", "") if self.explanation else "",
-            "analogy": self.explanation.get("analogy", "") if self.explanation else "",
-            "common_causes": self.explanation.get("common_causes", "") if self.explanation else "",
-            "how_to_avoid": self.explanation.get("how_to_avoid", "") if self.explanation else "",
+            "what_happened": (
+                self.explanation.get("what_happened", "")
+                if self.explanation else ""
+            ),
+            "why_happened": (
+                self.explanation.get("why_happened", "")
+                if self.explanation else ""
+            ),
+            "simple_explanation": (
+                self.explanation.get("simple_explanation", "")
+                if self.explanation else ""
+            ),
+            "analogy": (
+                self.explanation.get("analogy", "")
+                if self.explanation else ""
+            ),
+            "common_causes": (
+                self.explanation.get("common_causes", "")
+                if self.explanation else ""
+            ),
+            "how_to_avoid": (
+                self.explanation.get("how_to_avoid", "")
+                if self.explanation else ""
+            ),
             "root_cause": root,
             "fixes": [f.to_dict() for f in self.fixes],
             "analysis": [
-                {"line": i.line, "column": i.column, "message": i.message,
-                 "severity": i.severity, "category": i.category}
+                {
+                    "line": i.line,
+                    "column": i.column,
+                    "message": i.message,
+                    "severity": i.severity,
+                    "category": i.category,
+                }
                 for i in self.analysis
             ],
             "full_traceback": self.trace.full_traceback if self.trace else "",
             "stdout": self.stdout,
             "stderr": self.stderr,
-            "docs_reference": self.explanation.get("docs_reference", "") if self.explanation else "",
+            "docs_reference": (
+                self.explanation.get("docs_reference", "")
+                if self.explanation else ""
+            ),
         }
+        return result
 
 
 class Runner:
@@ -75,7 +106,7 @@ class Runner:
 
     .. warning::
         :meth:`run_file` and :meth:`run_code` use ``exec()`` to run arbitrary
-        code.  Only run code you trust.  CodeMedic will warn about ``eval()``
+        code. Only run code you trust. CodeMedic will warn about ``eval()``
         and ``exec()`` detected in the target source via the security checker.
 
     Args:

@@ -70,14 +70,17 @@ class SecurityChecker(ast.NodeVisitor):
 
         if func_name in ("os.system", "subprocess.call", "subprocess.run",
                          "subprocess.Popen", "os.popen"):
-            # Check if the argument is not a plain string literal (potential injection)
+            # Check if argument is not a plain string literal (injection risk)
             if node.args and not isinstance(node.args[0], ast.Constant):
                 self.warnings.append(SecurityWarning(
                     line=node.lineno,
                     column=node.col_offset,
                     code="SEC002",
                     severity="medium",
-                    message=f"Potential command injection via '{func_name}' with dynamic argument.",
+                    message=(
+                        f"Potential command injection via '{func_name}' "
+                        "with dynamic argument."
+                    ),
                     recommendation=(
                         "Pass a list of arguments instead of a shell string. "
                         "Use subprocess.run([...], shell=False)."
@@ -90,8 +93,14 @@ class SecurityChecker(ast.NodeVisitor):
                 column=node.col_offset,
                 code="SEC003",
                 severity="high",
-                message=f"'{func_name}' can execute arbitrary code when deserialising untrusted data.",
-                recommendation="Never unpickle data from untrusted sources. Use JSON instead.",
+                message=(
+                    f"'{func_name}' can execute arbitrary code when "
+                    "deserialising untrusted data."
+                ),
+                recommendation=(
+                    "Never unpickle data from untrusted sources. "
+                    "Use JSON instead."
+                ),
             ))
 
         if func_name in ("open", "io.open"):
@@ -102,10 +111,13 @@ class SecurityChecker(ast.NodeVisitor):
                     column=node.col_offset,
                     code="SEC004",
                     severity="low",
-                    message="Dynamic path passed to open() – verify it is sanitised.",
+                    message=(
+                        "Dynamic path passed to open() – "
+                        "verify it is sanitised."
+                    ),
                     recommendation=(
-                        "Use pathlib.Path.resolve() and check that the resolved path "
-                        "is within the intended directory."
+                        "Use pathlib.Path.resolve() and check that the "
+                        "resolved path is within the intended directory."
                     ),
                 ))
 
@@ -199,8 +211,9 @@ def check_source(source: str, filename: str = "<string>") -> list[SecurityWarnin
                     severity="high",
                     message=f"Possible hardcoded {label} detected.",
                     recommendation=(
-                        "Store secrets in environment variables or a secrets manager. "
-                        "Never commit credentials to source control."
+                        "Store secrets in environment variables or a "
+                        "secrets manager. Never commit credentials to "
+                        "source control."
                     ),
                 ))
 

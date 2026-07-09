@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from codemedic.config import Config, DEFAULT_CONFIG, load_config
+from codemedic.config import DEFAULT_CONFIG, Config, load_config
 
 
 class TestConfig:

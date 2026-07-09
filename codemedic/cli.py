@@ -43,18 +43,48 @@ def cli(ctx: click.Context, verbose: bool) -> None:
 
 
 @cli.command()
-@click.argument("filepath", type=click.Path(exists=True, file_okay=True, dir_okay=False, path_type=Path))
-@click.option("--mode", "-m", type=click.Choice(["beginner", "professional"]), default="beginner",
-              show_default=True, help="Explanation verbosity mode.")
-@click.option("--config", "-c", "config_path",
-              type=click.Path(exists=True, file_okay=True, dir_okay=False, path_type=Path),
-              default=None, help="Path to a codemedic.json config file.")
+@click.argument(
+    "filepath",
+    type=click.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        path_type=Path,
+    ),
+)
+@click.option(
+    "--mode",
+    "-m",
+    type=click.Choice(["beginner", "professional"]),
+    default="beginner",
+    show_default=True,
+    help="Explanation verbosity mode.",
+)
+@click.option(
+    "--config",
+    "-c",
+    "config_path",
+    type=click.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        path_type=Path,
+    ),
+    default=None,
+    help="Path to a codemedic.json config file.",
+)
 @click.option("--html/--no-html", default=False, help="Generate an HTML report.")
-@click.option("--json/--no-json", "gen_json", default=False, help="Generate a JSON report.")
-@click.option("--markdown/--no-markdown", default=False, help="Generate a Markdown report.")
-@click.option("--output", "-o", default="./codemedic_reports",
-              type=click.Path(file_okay=False, dir_okay=True),
-              help="Output directory for reports.")
+@click.option("--json/--no-json", "gen_json", default=False,
+              help="Generate a JSON report.")
+@click.option("--markdown/--no-markdown", default=False,
+              help="Generate a Markdown report.")
+@click.option(
+    "--output",
+    "-o",
+    default="./codemedic_reports",
+    type=click.Path(file_okay=False, dir_okay=True),
+    help="Output directory for reports.",
+)
 def run(
     filepath: Path,
     mode: str,
@@ -118,14 +148,36 @@ def run(
 
 
 @cli.command()
-@click.argument("filepath", type=click.Path(exists=True, file_okay=True, dir_okay=False, path_type=Path))
-@click.option("--format", "-f", "fmt",
-              type=click.Choice(["console", "html", "json", "markdown", "all"]),
-              default="console", show_default=True, help="Output format.")
-@click.option("--output", "-o", default="./codemedic_reports",
-              type=click.Path(file_okay=False, dir_okay=True), help="Report output directory.")
-@click.option("--security/--no-security", default=True,
-              help="Include security checks (default: enabled).")
+@click.argument(
+    "filepath",
+    type=click.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        path_type=Path,
+    ),
+)
+@click.option(
+    "--format",
+    "-f",
+    "fmt",
+    type=click.Choice(["console", "html", "json", "markdown", "all"]),
+    default="console",
+    show_default=True,
+    help="Output format.",
+)
+@click.option(
+    "--output",
+    "-o",
+    default="./codemedic_reports",
+    type=click.Path(file_okay=False, dir_okay=True),
+    help="Report output directory.",
+)
+@click.option(
+    "--security/--no-security",
+    default=True,
+    help="Include security checks (default: enabled).",
+)
 def analyze(filepath: Path, fmt: str, output: str, security: bool) -> None:
     """Analyse a Python file for static code issues.
 
@@ -149,8 +201,13 @@ def analyze(filepath: Path, fmt: str, output: str, security: bool) -> None:
         return
 
     issue_dicts = [
-        {"line": i.line, "column": i.column, "severity": i.severity,
-         "category": i.category, "message": i.message}
+        {
+            "line": i.line,
+            "column": i.column,
+            "severity": i.severity,
+            "category": i.category,
+            "message": i.message,
+        }
         for i in issues
     ]
 
@@ -160,20 +217,42 @@ def analyze(filepath: Path, fmt: str, output: str, security: bool) -> None:
             formatter.print_security_report(sec_warnings)
 
     if fmt in ("html", "all"):
-        data = {"file": str(filepath), "analysis": issue_dicts, "security": [
-            {"line": w.line, "code": w.code, "severity": w.severity,
-             "message": w.message, "recommendation": w.recommendation}
-            for w in sec_warnings
-        ]}
-        p = ReportGenerator(cfg).generate(data, format="html", filename=f"analysis_{filepath.stem}")
+        data = {
+            "file": str(filepath),
+            "analysis": issue_dicts,
+            "security": [
+                {
+                    "line": w.line,
+                    "code": w.code,
+                    "severity": w.severity,
+                    "message": w.message,
+                    "recommendation": w.recommendation,
+                }
+                for w in sec_warnings
+            ],
+        }
+        report_gen = ReportGenerator(cfg)
+        p = report_gen.generate(
+            data,
+            format="html",
+            filename=f"analysis_{filepath.stem}",
+        )
         click.echo(f"HTML report: {p}")
     if fmt in ("json", "all"):
         data = {"file": str(filepath), "analysis": issue_dicts}
-        p = ReportGenerator(cfg).generate(data, format="json", filename=f"analysis_{filepath.stem}")
+        p = ReportGenerator(cfg).generate(
+            data,
+            format="json",
+            filename=f"analysis_{filepath.stem}",
+        )
         click.echo(f"JSON report: {p}")
     if fmt in ("markdown", "all"):
         data = {"file": str(filepath), "analysis": issue_dicts}
-        p = ReportGenerator(cfg).generate(data, format="markdown", filename=f"analysis_{filepath.stem}")
+        p = ReportGenerator(cfg).generate(
+            data,
+            format="markdown",
+            filename=f"analysis_{filepath.stem}",
+        )
         click.echo(f"Markdown report: {p}")
 
 
@@ -230,14 +309,30 @@ def doctor() -> None:
 
 
 @cli.command()
-@click.option("--format", "-f", "fmt",
-              type=click.Choice(["html", "json", "markdown"]),
-              default="html", show_default=True, help="Report format.")
-@click.option("--output", "-o", default=None,
-              type=click.Path(dir_okay=False), help="Output file path.")
-@click.option("--input", "-i", "input_json", default=None,
-              type=click.Path(exists=True, dir_okay=False),
-              help="JSON file produced by a previous 'codemedic run --json' run.")
+@click.option(
+    "--format",
+    "-f",
+    "fmt",
+    type=click.Choice(["html", "json", "markdown"]),
+    default="html",
+    show_default=True,
+    help="Report format.",
+)
+@click.option(
+    "--output",
+    "-o",
+    default=None,
+    type=click.Path(dir_okay=False),
+    help="Output file path.",
+)
+@click.option(
+    "--input",
+    "-i",
+    "input_json",
+    default=None,
+    type=click.Path(exists=True, dir_okay=False),
+    help="JSON file produced by a previous 'codemedic run --json' run.",
+)
 def report(fmt: str, output: Optional[str], input_json: Optional[str]) -> None:
     """Generate a standalone report from a previous JSON run result.
 
@@ -260,20 +355,49 @@ def report(fmt: str, output: Optional[str], input_json: Optional[str]) -> None:
         data = {
             "error_type": "TypeError",
             "message": "can only concatenate str (not 'int') to str",
-            "simple_explanation": "You tried to add a string to an integer. Python needs them to be the same type.",
-            "analogy": "Like trying to add apples and invoices – they're different things.",
-            "how_to_avoid": "Use str() to convert the integer first, or use an f-string.",
-            "root_cause": {"file": "example.py", "short_file": "example.py", "line": 3,
-                           "function": "<module>", "code": "print('Age: ' + 25)"},
-            "fixes": [{"line_number": 3, "original_line": "print('Age: ' + 25)",
-                       "suggested_line": "print('Age: ' + str(25))", "description": "Convert int to str.", "confidence": 0.9}],
-            "full_traceback": "Traceback (most recent call last):\n  File 'example.py', line 3\nTypeError: ...",
+            "simple_explanation": (
+                "You tried to add a string to an integer. "
+                "Python needs them to be the same type."
+            ),
+            "analogy": (
+                "Like trying to add apples and invoices – "
+                "they're different things."
+            ),
+            "how_to_avoid": (
+                "Use str() to convert the integer first, "
+                "or use an f-string."
+            ),
+            "root_cause": {
+                "file": "example.py",
+                "short_file": "example.py",
+                "line": 3,
+                "function": "<module>",
+                "code": "print('Age: ' + 25)",
+            },
+            "fixes": [
+                {
+                    "line_number": 3,
+                    "original_line": "print('Age: ' + 25)",
+                    "suggested_line": "print('Age: ' + str(25))",
+                    "description": "Convert int to str.",
+                    "confidence": 0.9,
+                }
+            ],
+            "full_traceback": (
+                "Traceback (most recent call last):\n"
+                "  File 'example.py', line 3\n"
+                "TypeError: ..."
+            ),
             "example_before": "print('Age: ' + 25)",
             "example_after": "print(f'Age: {25}')",
         }
-        out_name = output or f"sample_report"
+        out_name = output or "sample_report"
 
-    out_path = gen.generate(data, format=fmt, filename=str(Path(out_name).name) if output else None)
+    out_path = gen.generate(
+        data,
+        format=fmt,
+        filename=str(Path(out_name).name) if output else None,
+    )
     click.echo(f"Report generated: {out_path}")
 
 
