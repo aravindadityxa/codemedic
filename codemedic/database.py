@@ -57,7 +57,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Catch it with 'except ArithmeticError' or handle the specific subclass.",
         "result = 1 / 0",
         "result = 1 / divisor if divisor != 0 else 0",
-        1, "arithmetic",
+        1,
+        "arithmetic",
         "https://docs.python.org/3/library/exceptions.html#ArithmeticError",
     ),
     (
@@ -70,7 +71,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Fix the logic so the assertion holds, or handle with try/except AssertionError.",
         "assert len(items) > 0",
         "if not items:\n    raise ValueError('items must not be empty')",
-        1, "assertion",
+        1,
+        "assertion",
         "https://docs.python.org/3/library/exceptions.html#AssertionError",
     ),
     (
@@ -83,7 +85,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Check spelling; use dir(obj) to inspect available attributes.",
         "x = 5\nx.append(3)",
         "x = [5]\nx.append(3)",
-        1, "attribute",
+        1,
+        "attribute",
         "https://docs.python.org/3/library/exceptions.html#AttributeError",
     ),
     (
@@ -96,7 +99,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use asyncio, select, or retry the operation after a short delay.",
         "sock.setblocking(False)\nsock.recv(1024)",
         "import select\nready = select.select([sock], [], [], timeout=1.0)",
-        3, "io",
+        3,
+        "io",
         "https://docs.python.org/3/library/exceptions.html#BlockingIOError",
     ),
     (
@@ -110,7 +114,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "import sys\nfor line in data:\n    sys.stdout.write(line)",
         "try:\n    for line in data:\n        sys.stdout.write(line)\n"
         "except BrokenPipeError:\n    pass",
-        2, "io",
+        2,
+        "io",
         "https://docs.python.org/3/library/exceptions.html#BrokenPipeError",
     ),
     (
@@ -123,7 +128,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Ensure the buffer is writeable and not locked before modifying it.",
         "mv = memoryview(bytes(b'read-only'))\nmv[0] = 65",
         "data = bytearray(b'writable')\nmv = memoryview(data)\nmv[0] = 65",
-        3, "buffer",
+        3,
+        "buffer",
         "https://docs.python.org/3/library/exceptions.html#BufferError",
     ),
     (
@@ -136,7 +142,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Check subprocess return codes and handle os.error conditions.",
         "os.waitpid(pid, 0)",
         "try:\n    os.waitpid(pid, 0)\nexcept ChildProcessError:\n    pass",
-        3, "process",
+        3,
+        "process",
         "https://docs.python.org/3/library/exceptions.html#ChildProcessError",
     ),
     (
@@ -151,7 +158,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "for attempt in range(3):\n    try:\n        "
         "sock.connect((host, port))\n        break\n    "
         "except ConnectionAbortedError:\n        time.sleep(2 ** attempt)",
-        3, "network",
+        3,
+        "network",
         "https://docs.python.org/3/library/exceptions.html#ConnectionAbortedError",
     ),
     (
@@ -165,7 +173,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "sock.connect(('invalid.host', 80))",
         "try:\n    sock.connect((host, port))\n"
         "except ConnectionError as e:\n    print(f'Connection failed: {e}')",
-        2, "network",
+        2,
+        "network",
         "https://docs.python.org/3/library/exceptions.html#ConnectionError",
     ),
     (
@@ -178,7 +187,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Make sure the server is running and listening on the correct port.",
         "sock.connect(('localhost', 9999))",
         "# Start the server first, then connect\nsock.connect(('localhost', 9999))",
-        2, "network",
+        2,
+        "network",
         "https://docs.python.org/3/library/exceptions.html#ConnectionRefusedError",
     ),
     (
@@ -191,7 +201,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Handle gracefully and reconnect if appropriate.",
         "data = sock.recv(4096)",
         "try:\n    data = sock.recv(4096)\nexcept ConnectionResetError:\n    reconnect()",
-        2, "network",
+        2,
+        "network",
         "https://docs.python.org/3/library/exceptions.html#ConnectionResetError",
     ),
     (
@@ -204,7 +215,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use try/except EOFError around input(); check your data source.",
         "value = input('Enter a number: ')",
         "try:\n    value = input('Enter a number: ')\nexcept EOFError:\n    value = '0'",
-        1, "io",
+        1,
+        "io",
         "https://docs.python.org/3/library/exceptions.html#EOFError",
     ),
     (
@@ -217,7 +229,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use exist_ok=True for directories; use 'w' mode instead of 'x' for files.",
         "Path('output').mkdir()",
         "Path('output').mkdir(exist_ok=True)",
-        1, "filesystem",
+        1,
+        "filesystem",
         "https://docs.python.org/3/library/exceptions.html#FileExistsError",
     ),
     (
@@ -230,7 +243,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Verify the path with Path.exists(); use try/except FileNotFoundError.",
         "open('data.csv')",
         "from pathlib import Path\nif Path('data.csv').exists():\n    open('data.csv')",
-        1, "filesystem",
+        1,
+        "filesystem",
         "https://docs.python.org/3/library/exceptions.html#FileNotFoundError",
     ),
     (
@@ -243,7 +257,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use the 'math' module and handle inf/nan values explicitly.",
         "import math\nmath.sqrt(-1)",
         "import cmath\nresult = cmath.sqrt(-1)  # returns complex number",
-        3, "arithmetic",
+        3,
+        "arithmetic",
         "https://docs.python.org/3/library/exceptions.html#FloatingPointError",
     ),
     (
@@ -257,7 +272,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "def gen():\n    yield 1\n    yield 2\ng = gen()\nnext(g)\ng.close()",
         "def gen():\n    try:\n        yield 1\n        yield 2\n    "
         "finally:\n        pass  # cleanup here",
-        2, "generator",
+        2,
+        "generator",
         "https://docs.python.org/3/library/exceptions.html#GeneratorExit",
     ),
     (
@@ -270,7 +286,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "pip install the package; check for typos; avoid circular imports.",
         "import numppy",
         "import numpy",
-        1, "import",
+        1,
+        "import",
         "https://docs.python.org/3/library/exceptions.html#ImportError",
     ),
     (
@@ -283,7 +300,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use consistent spaces (4 per level) and never mix tabs with spaces.",
         "if True:\nprint('hello')",
         "if True:\n    print('hello')",
-        1, "syntax",
+        1,
+        "syntax",
         "https://docs.python.org/3/library/exceptions.html#IndentationError",
     ),
     (
@@ -296,7 +314,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Check len(seq) before indexing; use enumerate(); use .get() equivalent.",
         "my_list = [1, 2, 3]\nmy_list[5]",
         "my_list = [1, 2, 3]\nif 5 < len(my_list):\n    print(my_list[5])",
-        1, "sequence",
+        1,
+        "sequence",
         "https://docs.python.org/3/library/exceptions.html#IndexError",
     ),
     (
@@ -309,7 +328,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Python 3.5+ retries interrupted syscalls automatically; catch if needed.",
         "time.sleep(100)  # interrupted by signal",
         "try:\n    time.sleep(100)\nexcept InterruptedError:\n    pass",
-        3, "os",
+        3,
+        "os",
         "https://docs.python.org/3/library/exceptions.html#InterruptedError",
     ),
     (
@@ -322,7 +342,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Check with Path.is_dir() before performing file operations.",
         "open('/tmp')",
         "from pathlib import Path\npath = Path('/tmp')\nif path.is_file():\n    open(path)",
-        1, "filesystem",
+        1,
+        "filesystem",
         "https://docs.python.org/3/library/exceptions.html#IsADirectoryError",
     ),
     (
@@ -335,7 +356,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use dict.get(key, default); check with 'key in dict'; use collections.defaultdict.",
         "d = {'name': 'Alice'}\nprint(d['age'])",
         "d = {'name': 'Alice'}\nprint(d.get('age', 'unknown'))",
-        1, "mapping",
+        1,
+        "mapping",
         "https://docs.python.org/3/library/exceptions.html#KeyError",
     ),
     (
@@ -349,7 +371,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "while True:\n    pass",
         "try:\n    while True:\n        pass\n"
         "except KeyboardInterrupt:\n    print('Stopped by user')",
-        1, "signal",
+        1,
+        "signal",
         "https://docs.python.org/3/library/exceptions.html#KeyboardInterrupt",
     ),
     (
@@ -362,7 +385,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use the specific subclass (IndexError, KeyError) for targeted handling.",
         "my_list[99]",
         "try:\n    val = my_list[99]\nexcept LookupError:\n    val = None",
-        1, "lookup",
+        1,
+        "lookup",
         "https://docs.python.org/3/library/exceptions.html#LookupError",
     ),
     (
@@ -375,7 +399,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Process data in chunks; release references; use generators instead of lists.",
         "data = [0] * 10**10",
         "# Use a generator\ndata = (0 for _ in range(10**10))",
-        2, "memory",
+        2,
+        "memory",
         "https://docs.python.org/3/library/exceptions.html#MemoryError",
     ),
     (
@@ -388,7 +413,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Run 'pip install <package>'; check your virtual environment is active.",
         "import pandas",
         "# First: pip install pandas\nimport pandas",
-        1, "import",
+        1,
+        "import",
         "https://docs.python.org/3/library/exceptions.html#ModuleNotFoundError",
     ),
     (
@@ -401,7 +427,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Check spelling; define the variable before using it; check scope.",
         "print(messge)",
         "message = 'Hello'\nprint(message)",
-        1, "name",
+        1,
+        "name",
         "https://docs.python.org/3/library/exceptions.html#NameError",
     ),
     (
@@ -415,7 +442,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "os.listdir('file.txt')",
         "from pathlib import Path\npath = Path('file.txt')\n"
         "if path.is_dir():\n    os.listdir(path)",
-        1, "filesystem",
+        1,
+        "filesystem",
         "https://docs.python.org/3/library/exceptions.html#NotADirectoryError",
     ),
     (
@@ -429,7 +457,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "class Animal:\n    def speak(self):\n        raise NotImplementedError\n\n"
         "Animal().speak()",
         "class Dog(Animal):\n    def speak(self):\n        return 'Woof!'",
-        1, "implementation",
+        1,
+        "implementation",
         "https://docs.python.org/3/library/exceptions.html#NotImplementedError",
     ),
     (
@@ -443,7 +472,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "open('/root/secret.txt', 'w')",
         "try:\n    open('/root/secret.txt', 'w')\n"
         "except PermissionError:\n    print('No permission')",
-        2, "os",
+        2,
+        "os",
         "https://docs.python.org/3/library/exceptions.html#OSError",
     ),
     (
@@ -457,7 +487,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "import math\nmath.exp(1000)",
         "import math\ntry:\n    result = math.exp(1000)\n"
         "except OverflowError:\n    result = float('inf')",
-        2, "arithmetic",
+        2,
+        "arithmetic",
         "https://docs.python.org/3/library/exceptions.html#OverflowError",
     ),
     (
@@ -471,7 +502,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "open('/etc/passwd', 'w')",
         "try:\n    open('/etc/passwd', 'w')\n"
         "except PermissionError:\n    print('Permission denied')",
-        1, "filesystem",
+        1,
+        "filesystem",
         "https://docs.python.org/3/library/exceptions.html#PermissionError",
     ),
     (
@@ -484,7 +516,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Check if the process is still running before sending signals.",
         "os.kill(pid, signal.SIGTERM)",
         "try:\n    os.kill(pid, signal.SIGTERM)\nexcept ProcessLookupError:\n    pass",
-        3, "process",
+        3,
+        "process",
         "https://docs.python.org/3/library/exceptions.html#ProcessLookupError",
     ),
     (
@@ -498,7 +531,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "increase sys.setrecursionlimit cautiously.",
         "def factorial(n):\n    return n * factorial(n - 1)",
         "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)",
-        2, "recursion",
+        2,
+        "recursion",
         "https://docs.python.org/3/library/exceptions.html#RecursionError",
     ),
     (
@@ -512,7 +546,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "import weakref\nref = weakref.ref(obj)\ndel obj\nref()()",
         "import weakref\nref = weakref.ref(obj)\ndel obj\n"
         "target = ref()\nif target is not None:\n    target()",
-        3, "memory",
+        3,
+        "memory",
         "https://docs.python.org/3/library/exceptions.html#ReferenceError",
     ),
     (
@@ -525,7 +560,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Read the error message carefully; it describes the specific issue.",
         "raise RuntimeError('Something went wrong')",
         "# Address the specific root cause described in the message",
-        2, "runtime",
+        2,
+        "runtime",
         "https://docs.python.org/3/library/exceptions.html#RuntimeError",
     ),
     (
@@ -538,7 +574,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use 'async for' to iterate; the exception is handled automatically.",
         "async def __anext__(self):\n    raise StopAsyncIteration",
         "# Use 'async for item in async_iterable:' instead of manual __anext__",
-        3, "async",
+        3,
+        "async",
         "https://docs.python.org/3/library/exceptions.html#StopAsyncIteration",
     ),
     (
@@ -551,7 +588,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use for loops instead of manual next(); provide a default to next().",
         "it = iter([1, 2])\nnext(it)\nnext(it)\nnext(it)  # raises StopIteration",
         "it = iter([1, 2])\nval = next(it, None)  # returns None instead of raising",
-        1, "iterator",
+        1,
+        "iterator",
         "https://docs.python.org/3/library/exceptions.html#StopIteration",
     ),
     (
@@ -564,7 +602,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Read the caret (^) position; check for missing colons, brackets, quotes.",
         "if x > 0\n    print(x)",
         "if x > 0:\n    print(x)",
-        1, "syntax",
+        1,
+        "syntax",
         "https://docs.python.org/3/library/exceptions.html#SyntaxError",
     ),
     (
@@ -577,7 +616,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Report to the Python bug tracker; check for corrupted .pyc files.",
         "# Usually triggered by buggy C extensions",
         "# Reinstall packages; report bug to Python or library maintainer",
-        3, "internal",
+        3,
+        "internal",
         "https://docs.python.org/3/library/exceptions.html#SystemError",
     ),
     (
@@ -590,7 +630,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Catch with except SystemExit if you need to do cleanup, then re-raise.",
         "sys.exit(1)",
         "try:\n    sys.exit(1)\nexcept SystemExit:\n    cleanup()\n    raise",
-        1, "system",
+        1,
+        "system",
         "https://docs.python.org/3/library/exceptions.html#SystemExit",
     ),
     (
@@ -603,7 +644,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Convert all indentation to 4 spaces; use an editor that shows whitespace.",
         "def foo():\n\t    pass  # tab + spaces",
         "def foo():\n    pass  # 4 spaces only",
-        1, "syntax",
+        1,
+        "syntax",
         "https://docs.python.org/3/library/exceptions.html#TabError",
     ),
     (
@@ -617,7 +659,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "sock.settimeout(0.001)\nsock.recv(1024)",
         "sock.settimeout(10.0)  # 10 second timeout\ntry:\n    "
         "data = sock.recv(1024)\nexcept TimeoutError:\n    pass",
-        2, "network",
+        2,
+        "network",
         "https://docs.python.org/3/library/exceptions.html#TimeoutError",
     ),
     (
@@ -630,7 +673,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use explicit type conversion: str(), int(), float(); read the function signature.",
         "print('Age: ' + 25)",
         "print('Age: ' + str(25))\n# or: print(f'Age: {25}')",
-        1, "type",
+        1,
+        "type",
         "https://docs.python.org/3/library/exceptions.html#TypeError",
     ),
     (
@@ -643,7 +687,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Add 'global' or 'nonlocal' declaration; assign before use.",
         "x = 10\ndef foo():\n    print(x)\n    x = 20",
         "x = 10\ndef foo():\n    global x\n    print(x)\n    x = 20",
-        2, "name",
+        2,
+        "name",
         "https://docs.python.org/3/library/exceptions.html#UnboundLocalError",
     ),
     (
@@ -656,7 +701,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Specify the correct encoding; use errors='replace' or 'ignore'.",
         "open('file.txt', encoding='utf-8').read()",
         "open('file.txt', encoding='utf-8', errors='replace').read()",
-        2, "unicode",
+        2,
+        "unicode",
         "https://docs.python.org/3/library/exceptions.html#UnicodeDecodeError",
     ),
     (
@@ -669,7 +715,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use UTF-8 encoding; specify errors='replace'; normalise the string first.",
         "open('out.txt', 'w', encoding='ascii').write('café')",
         "open('out.txt', 'w', encoding='utf-8').write('café')",
-        2, "unicode",
+        2,
+        "unicode",
         "https://docs.python.org/3/library/exceptions.html#UnicodeEncodeError",
     ),
     (
@@ -682,7 +729,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Always specify explicit encodings; prefer UTF-8.",
         "b'\\xff'.decode('utf-8')",
         "b'\\xff'.decode('utf-8', errors='replace')",
-        2, "unicode",
+        2,
+        "unicode",
         "https://docs.python.org/3/library/exceptions.html#UnicodeError",
     ),
     (
@@ -695,7 +743,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Use errors='replace' or extend your translation table.",
         "s = 'café'\ns.translate({ord('é'): None})",
         "# Ensure all characters in the string have mappings in the table",
-        3, "unicode",
+        3,
+        "unicode",
         "https://docs.python.org/3/library/exceptions.html#UnicodeTranslateError",
     ),
     (
@@ -709,7 +758,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Validate values before passing them; use try/except ValueError.",
         "int('hello')",
         "try:\n    n = int(user_input)\nexcept ValueError:\n    n = 0",
-        1, "value",
+        1,
+        "value",
         "https://docs.python.org/3/library/exceptions.html#ValueError",
     ),
     (
@@ -722,7 +772,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Check that the denominator is non-zero before dividing.",
         "result = total / count",
         "result = total / count if count != 0 else 0",
-        1, "arithmetic",
+        1,
+        "arithmetic",
         "https://docs.python.org/3/library/exceptions.html#ZeroDivisionError",
     ),
 ]
@@ -779,9 +830,7 @@ class KnowledgeBase:
     def get_error_info(self, exception_type: str) -> Optional[dict[str, Any]]:
         """Return the full knowledge-base entry for *exception_type*, or ``None``."""
         with self._connect() as conn:
-            cur = conn.execute(
-                "SELECT * FROM errors WHERE exception_type = ?", (exception_type,)
-            )
+            cur = conn.execute("SELECT * FROM errors WHERE exception_type = ?", (exception_type,))
             row = cur.fetchone()
             return dict(row) if row else None
 
@@ -814,9 +863,20 @@ class KnowledgeBase:
                 " simple_explanation, analogy, fixes, example_before, example_after,"
                 " difficulty, category, docs_url)"
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (exception_type, description, why_it_happens, common_causes,
-                 simple_explanation, analogy, fixes, example_before, example_after,
-                 difficulty, category, docs_url),
+                (
+                    exception_type,
+                    description,
+                    why_it_happens,
+                    common_causes,
+                    simple_explanation,
+                    analogy,
+                    fixes,
+                    example_before,
+                    example_after,
+                    difficulty,
+                    category,
+                    docs_url,
+                ),
             )
 
     def add_pattern(self, exception_type: str, pattern: str, suggestion: str) -> None:

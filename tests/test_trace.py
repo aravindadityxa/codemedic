@@ -63,7 +63,10 @@ class TestTraceResult:
 class TestTraceCollector:
     def test_collect_type_error(self, type_error_trace: TraceResult) -> None:
         assert type_error_trace.exception_type == "TypeError"
-        assert "str" in type_error_trace.exception_message.lower() or "int" in type_error_trace.exception_message.lower()
+        assert (
+            "str" in type_error_trace.exception_message.lower()
+            or "int" in type_error_trace.exception_message.lower()
+        )
         assert len(type_error_trace.frames) >= 1
         assert len(type_error_trace.full_traceback) > 0
 
@@ -109,7 +112,9 @@ class TestTraceCollector:
         """Collector should not crash when a frame has many locals."""
         try:
             # Create a frame with many locals
-            code = "; ".join(f"var_{i} = {i}" for i in range(50)) + "; raise ValueError('many locals')"
+            code = (
+                "; ".join(f"var_{i} = {i}" for i in range(50)) + "; raise ValueError('many locals')"
+            )
             exec(code)  # noqa: S102
         except ValueError as exc:
             trace = _collect(exc)

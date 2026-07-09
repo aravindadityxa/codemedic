@@ -91,9 +91,16 @@ class TestExplainByName:
     def test_all_major_exceptions(self, tmp_db: KnowledgeBase) -> None:
         engine = make_engine(tmp_db=tmp_db)
         exceptions = [
-            "TypeError", "NameError", "IndexError", "KeyError",
-            "AttributeError", "ZeroDivisionError", "FileNotFoundError",
-            "ValueError", "RuntimeError", "ImportError",
+            "TypeError",
+            "NameError",
+            "IndexError",
+            "KeyError",
+            "AttributeError",
+            "ZeroDivisionError",
+            "FileNotFoundError",
+            "ValueError",
+            "RuntimeError",
+            "ImportError",
         ]
         for exc_name in exceptions:
             result = engine.explain_by_name(exc_name)

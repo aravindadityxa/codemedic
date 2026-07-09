@@ -74,10 +74,8 @@ def cli(ctx: click.Context, verbose: bool) -> None:
     help="Path to a codemedic.json config file.",
 )
 @click.option("--html/--no-html", default=False, help="Generate an HTML report.")
-@click.option("--json/--no-json", "gen_json", default=False,
-              help="Generate a JSON report.")
-@click.option("--markdown/--no-markdown", default=False,
-              help="Generate a Markdown report.")
+@click.option("--json/--no-json", "gen_json", default=False, help="Generate a JSON report.")
+@click.option("--markdown/--no-markdown", default=False, help="Generate a Markdown report.")
 @click.option(
     "--output",
     "-o",
@@ -120,8 +118,16 @@ def run(
         warnings = [i for i in result.analysis if i.severity in ("warning", "error")]
         if warnings:
             formatter.print_analysis_report(
-                [{"line": i.line, "column": i.column, "severity": i.severity,
-                  "category": i.category, "message": i.message} for i in warnings]
+                [
+                    {
+                        "line": i.line,
+                        "column": i.column,
+                        "severity": i.severity,
+                        "category": i.category,
+                        "message": i.message,
+                    }
+                    for i in warnings
+                ]
             )
 
     if result.success:
@@ -194,6 +200,7 @@ def analyze(filepath: Path, fmt: str, output: str, security: bool) -> None:
     sec_warnings: list[Any] = []
     if security:
         from .security import check_file as sec_check
+
         sec_warnings = sec_check(filepath)
 
     if not issues and not sec_warnings:
@@ -258,8 +265,13 @@ def analyze(filepath: Path, fmt: str, output: str, security: bool) -> None:
 
 @cli.command()
 @click.argument("exception_type")
-@click.option("--mode", "-m", type=click.Choice(["beginner", "professional"]),
-              default="beginner", show_default=True)
+@click.option(
+    "--mode",
+    "-m",
+    type=click.Choice(["beginner", "professional"]),
+    default="beginner",
+    show_default=True,
+)
 def explain(exception_type: str, mode: str) -> None:
     """Explain a Python exception type in plain English.
 
@@ -356,17 +368,10 @@ def report(fmt: str, output: Optional[str], input_json: Optional[str]) -> None:
             "error_type": "TypeError",
             "message": "can only concatenate str (not 'int') to str",
             "simple_explanation": (
-                "You tried to add a string to an integer. "
-                "Python needs them to be the same type."
+                "You tried to add a string to an integer. " "Python needs them to be the same type."
             ),
-            "analogy": (
-                "Like trying to add apples and invoices – "
-                "they're different things."
-            ),
-            "how_to_avoid": (
-                "Use str() to convert the integer first, "
-                "or use an f-string."
-            ),
+            "analogy": ("Like trying to add apples and invoices – " "they're different things."),
+            "how_to_avoid": ("Use str() to convert the integer first, " "or use an f-string."),
             "root_cause": {
                 "file": "example.py",
                 "short_file": "example.py",
@@ -410,6 +415,7 @@ def version_cmd() -> None:
 def _check_package(name: str) -> str:
     try:
         import importlib.metadata
+
         v = importlib.metadata.version(name)
         return f"installed ({v})"
     except Exception:

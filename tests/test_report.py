@@ -34,7 +34,13 @@ SAMPLE_DATA = {
         }
     ],
     "analysis": [
-        {"line": 1, "column": 0, "severity": "warning", "category": "test", "message": "Test issue"},
+        {
+            "line": 1,
+            "column": 0,
+            "severity": "warning",
+            "category": "test",
+            "message": "Test issue",
+        },
     ],
     "full_traceback": "Traceback (most recent call last):\n  File 'example.py', line 3\nTypeError: ...",
     "example_before": "print('Age: ' + 25)",

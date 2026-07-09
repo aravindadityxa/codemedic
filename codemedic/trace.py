@@ -109,9 +109,7 @@ class TraceCollector:
         full_trace = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
 
         chained: Optional[TraceResult] = None
-        cause = getattr(exc_value, "__cause__", None) or getattr(
-            exc_value, "__context__", None
-        )
+        cause = getattr(exc_value, "__cause__", None) or getattr(exc_value, "__context__", None)
         if cause is not None and cause is not exc_value:
             try:
                 chained = self.collect_from_exception(

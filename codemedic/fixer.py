@@ -43,12 +43,15 @@ class PatchSuggestion:
         """Return a unified diff of the change."""
         a = self.original_line.splitlines(keepends=True) or [""]
         b = self.suggested_line.splitlines(keepends=True) or [""]
-        lines = list(difflib.unified_diff(
-            a, b,
-            fromfile=f"original (line {self.line_number})",
-            tofile="suggested",
-            lineterm="",
-        ))
+        lines = list(
+            difflib.unified_diff(
+                a,
+                b,
+                fromfile=f"original (line {self.line_number})",
+                tofile="suggested",
+                lineterm="",
+            )
+        )
         return "\n".join(lines)
 
     def to_dict(self) -> dict[str, object]:
@@ -119,38 +122,44 @@ class Fixer:
                 if match:
                     v1, v2 = match.group(1), match.group(2)
                     new_line = line.replace(match.group(0), f"str({v1}) + str({v2})")
-                    suggestions.append(PatchSuggestion(
-                        line_number=frame.lineno,
-                        original_line=line,
-                        suggested_line=new_line,
-                        description=f"Convert both operands to str: str({v1}) + str({v2}). "
-                                    f"Or use an f-string: f'{{{v1}}}{{{v2}}}'.",
-                        confidence=0.80,
-                    ))
+                    suggestions.append(
+                        PatchSuggestion(
+                            line_number=frame.lineno,
+                            original_line=line,
+                            suggested_line=new_line,
+                            description=f"Convert both operands to str: str({v1}) + str({v2}). "
+                            f"Or use an f-string: f'{{{v1}}}{{{v2}}}'.",
+                            confidence=0.80,
+                        )
+                    )
 
             # unsupported operand types
             if "unsupported operand type" in msg:
-                suggestions.append(PatchSuggestion(
-                    line_number=frame.lineno,
-                    original_line=line,
-                    suggested_line="# Ensure both operands are the same type before this line",
-                    description="Operands have incompatible types. Add explicit type conversion.",
-                    confidence=0.55,
-                ))
+                suggestions.append(
+                    PatchSuggestion(
+                        line_number=frame.lineno,
+                        original_line=line,
+                        suggested_line="# Ensure both operands are the same type before this line",
+                        description="Operands have incompatible types. Add explicit type conversion.",
+                        confidence=0.55,
+                    )
+                )
 
             # not callable
             if "object is not callable" in msg:
-                suggestions.append(PatchSuggestion(
-                    line_number=frame.lineno,
-                    original_line=line,
-                    suggested_line=line,
-                    description=(
-                        "You are calling something that is not a function. "
-                        "Check if you accidentally overrode a built-in name "
-                        "or forgot to reference the callable."
-                    ),
-                    confidence=0.60,
-                ))
+                suggestions.append(
+                    PatchSuggestion(
+                        line_number=frame.lineno,
+                        original_line=line,
+                        suggested_line=line,
+                        description=(
+                            "You are calling something that is not a function. "
+                            "Check if you accidentally overrode a built-in name "
+                            "or forgot to reference the callable."
+                        ),
+                        confidence=0.60,
+                    )
+                )
 
         return suggestions
 
@@ -175,28 +184,28 @@ class Fixer:
 
         if similar:
             new_line = line.replace(undefined, similar[0])
-            suggestions.append(PatchSuggestion(
-                line_number=frame.lineno,
-                original_line=line,
-                suggested_line=new_line,
-                description=(
-                    f"Did you mean '{similar[0]}'? "
-                    + (
-                        f"Other close matches: {', '.join(similar[1:])}."
-                        if similar[1:]
-                        else ""
-                    )
-                ),
-                confidence=0.85,
-            ))
+            suggestions.append(
+                PatchSuggestion(
+                    line_number=frame.lineno,
+                    original_line=line,
+                    suggested_line=new_line,
+                    description=(
+                        f"Did you mean '{similar[0]}'? "
+                        + (f"Other close matches: {', '.join(similar[1:])}." if similar[1:] else "")
+                    ),
+                    confidence=0.85,
+                )
+            )
         else:
-            suggestions.append(PatchSuggestion(
-                line_number=frame.lineno,
-                original_line=line,
-                suggested_line=f"{undefined} = None  # TODO: assign the correct value",
-                description=f"'{undefined}' is not defined. Define it before this line.",
-                confidence=0.50,
-            ))
+            suggestions.append(
+                PatchSuggestion(
+                    line_number=frame.lineno,
+                    original_line=line,
+                    suggested_line=f"{undefined} = None  # TODO: assign the correct value",
+                    description=f"'{undefined}' is not defined. Define it before this line.",
+                    confidence=0.50,
+                )
+            )
 
         return suggestions
 
@@ -216,22 +225,26 @@ class Fixer:
         if re.match(r"^\d+$", idx_expr.strip()):
             idx = int(idx_expr.strip())
             new_line = f"if len({var}) > {idx}:\n    {line}"
-            suggestions.append(PatchSuggestion(
-                line_number=frame.lineno,
-                original_line=line,
-                suggested_line=new_line,
-                description=f"Guard the access: check len({var}) > {idx} first. "
-                            f"Alternatively use: {var}[{idx}] if len({var}) > {idx} else None",
-                confidence=0.80,
-            ))
+            suggestions.append(
+                PatchSuggestion(
+                    line_number=frame.lineno,
+                    original_line=line,
+                    suggested_line=new_line,
+                    description=f"Guard the access: check len({var}) > {idx} first. "
+                    f"Alternatively use: {var}[{idx}] if len({var}) > {idx} else None",
+                    confidence=0.80,
+                )
+            )
         else:
-            suggestions.append(PatchSuggestion(
-                line_number=frame.lineno,
-                original_line=line,
-                suggested_line=f"# Ensure index '{idx_expr}' is within range before: {line}",
-                description=f"Check that '{idx_expr}' is a valid index for '{var}'.",
-                confidence=0.60,
-            ))
+            suggestions.append(
+                PatchSuggestion(
+                    line_number=frame.lineno,
+                    original_line=line,
+                    suggested_line=f"# Ensure index '{idx_expr}' is within range before: {line}",
+                    description=f"Check that '{idx_expr}' is a valid index for '{var}'.",
+                    confidence=0.60,
+                )
+            )
 
         return suggestions
 
@@ -250,36 +263,40 @@ class Fixer:
         if match:
             var, key_expr = match.group(1), match.group(2)
             # Suggest .get()
-            get_version = line.replace(
-                match.group(0), f"{var}.get({key_expr}, None)"
+            get_version = line.replace(match.group(0), f"{var}.get({key_expr}, None)")
+            suggestions.append(
+                PatchSuggestion(
+                    line_number=frame.lineno,
+                    original_line=line,
+                    suggested_line=get_version,
+                    description=f"Use {var}.get({key_expr}, default) to avoid KeyError.",
+                    confidence=0.85,
+                )
             )
-            suggestions.append(PatchSuggestion(
-                line_number=frame.lineno,
-                original_line=line,
-                suggested_line=get_version,
-                description=f"Use {var}.get({key_expr}, default) to avoid KeyError.",
-                confidence=0.85,
-            ))
-            suggestions.append(PatchSuggestion(
-                line_number=frame.lineno,
-                original_line=line,
-                suggested_line=f"if {key_expr} in {var}:\n    {line}",
-                description=f"Guard with: if {key_expr} in {var}: before accessing.",
-                confidence=0.75,
-            ))
+            suggestions.append(
+                PatchSuggestion(
+                    line_number=frame.lineno,
+                    original_line=line,
+                    suggested_line=f"if {key_expr} in {var}:\n    {line}",
+                    description=f"Guard with: if {key_expr} in {var}: before accessing.",
+                    confidence=0.75,
+                )
+            )
         else:
             # Fallback: use the key from the exception message
             key_name = trace.exception_message.strip("'\"")
-            suggestions.append(PatchSuggestion(
-                line_number=frame.lineno,
-                original_line=line,
-                suggested_line=f"# Use dict.get('{key_name}', default) to avoid KeyError",
-                description=(
-                    f"Key '{key_name}' does not exist. Use "
-                    f"dict.get('{key_name}', default) instead of direct access."
-                ),
-                confidence=0.70,
-            ))
+            suggestions.append(
+                PatchSuggestion(
+                    line_number=frame.lineno,
+                    original_line=line,
+                    suggested_line=f"# Use dict.get('{key_name}', default) to avoid KeyError",
+                    description=(
+                        f"Key '{key_name}' does not exist. Use "
+                        f"dict.get('{key_name}', default) instead of direct access."
+                    ),
+                    confidence=0.70,
+                )
+            )
 
         return suggestions
 
@@ -297,17 +314,19 @@ class Fixer:
             return suggestions
 
         line = (frame.code_context or "").strip()
-        suggestions.append(PatchSuggestion(
-            line_number=frame.lineno,
-            original_line=line,
-            suggested_line=f"# '{obj_type}' has no attribute '{attr}'. Use hasattr() to check.",
-            description=(
-                f"'{obj_type}' objects do not have '{attr}'. "
-                f"Use hasattr(obj, '{attr}') to check before accessing. "
-                f"Run dir(obj) to list available attributes."
-            ),
-            confidence=0.70,
-        ))
+        suggestions.append(
+            PatchSuggestion(
+                line_number=frame.lineno,
+                original_line=line,
+                suggested_line=f"# '{obj_type}' has no attribute '{attr}'. Use hasattr() to check.",
+                description=(
+                    f"'{obj_type}' objects do not have '{attr}'. "
+                    f"Use hasattr(obj, '{attr}') to check before accessing. "
+                    f"Run dir(obj) to list available attributes."
+                ),
+                confidence=0.70,
+            )
+        )
 
         return suggestions
 
@@ -325,13 +344,15 @@ class Fixer:
                 new_line = line.replace(
                     match.group(0), f"({numer} {op} {denom} if {denom} != 0 else 0)"
                 )
-                suggestions.append(PatchSuggestion(
-                    line_number=frame.lineno,
-                    original_line=line,
-                    suggested_line=new_line,
-                    description=f"Guard against zero: check '{denom} != 0' before dividing.",
-                    confidence=0.85,
-                ))
+                suggestions.append(
+                    PatchSuggestion(
+                        line_number=frame.lineno,
+                        original_line=line,
+                        suggested_line=new_line,
+                        description=f"Guard against zero: check '{denom} != 0' before dividing.",
+                        confidence=0.85,
+                    )
+                )
                 break
 
         return suggestions
@@ -343,18 +364,20 @@ class Fixer:
             return suggestions
 
         line = (frame.code_context or "").strip()
-        suggestions.append(PatchSuggestion(
-            line_number=frame.lineno,
-            original_line=line,
-            suggested_line=(
-                "from pathlib import Path\n"
-                f"path = Path(...)  # set correct path\n"
-                "if path.exists():\n"
-                f"    {line}"
-            ),
-            description="Verify the file exists with Path.exists() before opening it.",
-            confidence=0.75,
-        ))
+        suggestions.append(
+            PatchSuggestion(
+                line_number=frame.lineno,
+                original_line=line,
+                suggested_line=(
+                    "from pathlib import Path\n"
+                    f"path = Path(...)  # set correct path\n"
+                    "if path.exists():\n"
+                    f"    {line}"
+                ),
+                description="Verify the file exists with Path.exists() before opening it.",
+                confidence=0.75,
+            )
+        )
 
         return suggestions
 
@@ -367,17 +390,18 @@ class Fixer:
         module = match.group(1)
         frame = trace.innermost_frame
         line = (frame.code_context or "").strip() if frame else ""
-        module_name = module.split('.')[0]
-        suggestions.append(PatchSuggestion(
-            line_number=frame.lineno if frame else 0,
-            original_line=line,
-            suggested_line=f"# pip install {module_name}",
-            description=(
-                f"Module '{module}' is not installed. "
-                f"Run: pip install {module_name}"
-            ),
-            confidence=0.90,
-        ))
+        module_name = module.split(".")[0]
+        suggestions.append(
+            PatchSuggestion(
+                line_number=frame.lineno if frame else 0,
+                original_line=line,
+                suggested_line=f"# pip install {module_name}",
+                description=(
+                    f"Module '{module}' is not installed. " f"Run: pip install {module_name}"
+                ),
+                confidence=0.90,
+            )
+        )
 
         return suggestions
 
@@ -388,17 +412,19 @@ class Fixer:
             return suggestions
 
         line = (frame.code_context or "").strip()
-        suggestions.append(PatchSuggestion(
-            line_number=frame.lineno,
-            original_line=line,
-            suggested_line=f"# Ensure a base case terminates recursion before: {line}",
-            description=(
-                "Your function calls itself without a proper base case. "
-                "Add a condition that stops the recursion. "
-                "Consider refactoring to an iterative approach."
-            ),
-            confidence=0.80,
-        ))
+        suggestions.append(
+            PatchSuggestion(
+                line_number=frame.lineno,
+                original_line=line,
+                suggested_line=f"# Ensure a base case terminates recursion before: {line}",
+                description=(
+                    "Your function calls itself without a proper base case. "
+                    "Add a condition that stops the recursion. "
+                    "Consider refactoring to an iterative approach."
+                ),
+                confidence=0.80,
+            )
+        )
 
         return suggestions
 
@@ -409,19 +435,21 @@ class Fixer:
             return suggestions
 
         line = (frame.code_context or "").strip()
-        suggestions.append(PatchSuggestion(
-            line_number=frame.lineno,
-            original_line=line,
-            suggested_line=(
-                "try:\n"
-                f"    {line}\n"
-                "except ValueError as e:\n"
-                "    # handle invalid value\n"
-                "    pass"
-            ),
-            description="Wrap the operation in try/except ValueError to handle invalid values.",
-            confidence=0.65,
-        ))
+        suggestions.append(
+            PatchSuggestion(
+                line_number=frame.lineno,
+                original_line=line,
+                suggested_line=(
+                    "try:\n"
+                    f"    {line}\n"
+                    "except ValueError as e:\n"
+                    "    # handle invalid value\n"
+                    "    pass"
+                ),
+                description="Wrap the operation in try/except ValueError to handle invalid values.",
+                confidence=0.65,
+            )
+        )
 
         return suggestions
 
@@ -432,16 +460,18 @@ class Fixer:
             return suggestions
 
         line = (frame.code_context or "").strip()
-        suggestions.append(PatchSuggestion(
-            line_number=frame.lineno,
-            original_line=line,
-            suggested_line=line.replace("assert ", "if not (") + ": raise ValueError(...)",
-            description=(
-                "Convert the assert to an explicit raise for "
-                "clearer error messages in production."
-            ),
-            confidence=0.60,
-        ))
+        suggestions.append(
+            PatchSuggestion(
+                line_number=frame.lineno,
+                original_line=line,
+                suggested_line=line.replace("assert ", "if not (") + ": raise ValueError(...)",
+                description=(
+                    "Convert the assert to an explicit raise for "
+                    "clearer error messages in production."
+                ),
+                confidence=0.60,
+            )
+        )
 
         return suggestions
 

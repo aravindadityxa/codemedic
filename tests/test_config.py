@@ -50,16 +50,19 @@ class TestConfig:
 
     def test_numeric_log_level_warning(self) -> None:
         import logging
+
         cfg = Config(log_level="WARNING")
         assert cfg.numeric_log_level == logging.WARNING
 
     def test_numeric_log_level_debug(self) -> None:
         import logging
+
         cfg = Config(log_level="DEBUG")
         assert cfg.numeric_log_level == logging.DEBUG
 
     def test_numeric_log_level_invalid(self) -> None:
         import logging
+
         cfg = Config(log_level="INVALID")
         # falls back to WARNING
         assert cfg.numeric_log_level == logging.WARNING

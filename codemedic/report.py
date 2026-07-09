@@ -55,9 +55,7 @@ class ReportGenerator:
             return self._generate_json(data, filename)
         if fmt in ("markdown", "md"):
             return self._generate_markdown(data, filename)
-        raise ValueError(
-            f"Unsupported report format: '{format}'. Use html, json, or markdown."
-        )
+        raise ValueError(f"Unsupported report format: '{format}'. Use html, json, or markdown.")
 
     def _generate_html(self, data: dict[str, Any], filename: Optional[str]) -> Path:
         base = filename or f"report_{self._ts()}"
@@ -114,14 +112,16 @@ class ReportGenerator:
             rows = ""
             for i in analysis:
                 if isinstance(i, dict):
-                    line_num = i.get('line', '')
-                    severity = i.get('severity', 'info')
-                    category = self._esc(str(i.get('category', '')))
-                    message = self._esc(str(i.get('message', '')))
-                    rows += (f"<tr><td>{line_num}</td>"
-                             f"<td class='sev-{severity}'>{severity.upper()}</td>"
-                             f"<td>{category}</td>"
-                             f"<td>{message}</td></tr>")
+                    line_num = i.get("line", "")
+                    severity = i.get("severity", "info")
+                    category = self._esc(str(i.get("category", "")))
+                    message = self._esc(str(i.get("message", "")))
+                    rows += (
+                        f"<tr><td>{line_num}</td>"
+                        f"<td class='sev-{severity}'>{severity.upper()}</td>"
+                        f"<td>{category}</td>"
+                        f"<td>{message}</td></tr>"
+                    )
             analysis_html = (
                 "<table>\n"
                 "  <thead><tr><th>Line</th><th>Severity</th>"
@@ -199,7 +199,7 @@ class ReportGenerator:
             "  </style>\n"
             "</head>\n"
             "<body>\n"
-            "<div class=\"container\">\n"
+            '<div class="container">\n'
             f"  <h1>🚨 {error_type}</h1>\n"
             f'  <p style="color:#aaa">{message}</p>\n'
             "\n"
@@ -208,8 +208,7 @@ class ReportGenerator:
             f"    <p>{simple}</p>\n"
             "    "
             + (
-                f'<p style="color:#aaa;font-style:italic;'
-                f'margin-top:0.5rem">💡 {analogy}</p>'
+                f'<p style="color:#aaa;font-style:italic;' f'margin-top:0.5rem">💡 {analogy}</p>'
                 if analogy
                 else ""
             )
@@ -238,8 +237,7 @@ class ReportGenerator:
             "  </div>\n"
             "\n"
             + (
-                f'  <div class="card info"><h2>💡 Code Examples</h2>'
-                f"{examples_html}</div>\n"
+                f'  <div class="card info"><h2>💡 Code Examples</h2>' f"{examples_html}</div>\n"
                 if examples_html
                 else ""
             )
@@ -251,8 +249,7 @@ class ReportGenerator:
                 else ""
             )
             + (
-                f'  <div class="card"><h2>📄 Full Traceback</h2>'
-                f"<pre>{tb}</pre></div>\n"
+                f'  <div class="card"><h2>📄 Full Traceback</h2>' f"<pre>{tb}</pre></div>\n"
                 if tb
                 else ""
             )
@@ -347,13 +344,17 @@ class ReportGenerator:
             for f in fixes:
                 if isinstance(f, dict):
                     ln, desc, sug, conf = (
-                        f.get("line_number", ""), f.get("description", ""),
-                        f.get("suggested_line", ""), float(f.get("confidence", 0)),
+                        f.get("line_number", ""),
+                        f.get("description", ""),
+                        f.get("suggested_line", ""),
+                        float(f.get("confidence", 0)),
                     )
                 else:
                     ln, desc, sug, conf = (
-                        getattr(f, "line_number", ""), getattr(f, "description", ""),
-                        getattr(f, "suggested_line", ""), getattr(f, "confidence", 0),
+                        getattr(f, "line_number", ""),
+                        getattr(f, "description", ""),
+                        getattr(f, "suggested_line", ""),
+                        getattr(f, "confidence", 0),
                     )
                 lines += [
                     f"### Fix at line {ln} (confidence: {conf:.0%})",
@@ -373,13 +374,11 @@ class ReportGenerator:
             lines += [header, sep]
             for i in analysis:
                 if isinstance(i, dict):
-                    line_num = i.get('line', '')
-                    severity = i.get('severity', '').upper()
-                    category = i.get('category', '')
-                    message = i.get('message', '')
-                    lines.append(
-                        f"| {line_num} | {severity} | {category} | {message} |"
-                    )
+                    line_num = i.get("line", "")
+                    severity = i.get("severity", "").upper()
+                    category = i.get("category", "")
+                    message = i.get("message", "")
+                    lines.append(f"| {line_num} | {severity} | {category} | {message} |")
             lines.append("")
 
         if tb:
@@ -390,8 +389,7 @@ class ReportGenerator:
             "",
             f"_Generated by **CodeMedic v{get_version()}** on "
             f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}_  ",
-            f"_Python {sys.version.split()[0]} | "
-            f"{platform.system()} {platform.release()}_",
+            f"_Python {sys.version.split()[0]} | " f"{platform.system()} {platform.release()}_",
         ]
 
         return "\n".join(lines)
@@ -404,10 +402,7 @@ class ReportGenerator:
     def _esc(s: str) -> str:
         """Escape HTML special characters."""
         return (
-            s.replace("&", "&amp;")
-             .replace("<", "&lt;")
-             .replace(">", "&gt;")
-             .replace('"', "&quot;")
+            s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
         )
 
     def _make_serialisable(self, obj: Any) -> Any:

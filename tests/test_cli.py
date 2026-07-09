@@ -96,9 +96,7 @@ class TestRun:
     def test_generates_html_report(
         self, runner: CliRunner, bad_script: Path, tmp_path: Path
     ) -> None:
-        result = runner.invoke(cli, [
-            "run", str(bad_script), "--html", "--output", str(tmp_path)
-        ])
+        result = runner.invoke(cli, ["run", str(bad_script), "--html", "--output", str(tmp_path)])
         assert result.exit_code == 1
         html_files = list(tmp_path.glob("*.html"))
         assert len(html_files) >= 1
@@ -106,9 +104,7 @@ class TestRun:
     def test_generates_json_report(
         self, runner: CliRunner, bad_script: Path, tmp_path: Path
     ) -> None:
-        result = runner.invoke(cli, [
-            "run", str(bad_script), "--json", "--output", str(tmp_path)
-        ])
+        result = runner.invoke(cli, ["run", str(bad_script), "--json", "--output", str(tmp_path)])
         assert result.exit_code == 1
         json_files = list(tmp_path.glob("*.json"))
         assert len(json_files) >= 1
@@ -116,9 +112,9 @@ class TestRun:
     def test_generates_markdown_report(
         self, runner: CliRunner, bad_script: Path, tmp_path: Path
     ) -> None:
-        result = runner.invoke(cli, [
-            "run", str(bad_script), "--markdown", "--output", str(tmp_path)
-        ])
+        result = runner.invoke(
+            cli, ["run", str(bad_script), "--markdown", "--output", str(tmp_path)]
+        )
         assert result.exit_code == 1
         md_files = list(tmp_path.glob("*.md"))
         assert len(md_files) >= 1
@@ -137,9 +133,9 @@ class TestAnalyze:
         assert any(word in output_lower for word in ["warning", "unused", "bare", "✅"])
 
     def test_json_format(self, runner: CliRunner, analysis_script: Path, tmp_path: Path) -> None:
-        result = runner.invoke(cli, [
-            "analyze", str(analysis_script), "--format", "json", "--output", str(tmp_path)
-        ])
+        result = runner.invoke(
+            cli, ["analyze", str(analysis_script), "--format", "json", "--output", str(tmp_path)]
+        )
         assert result.exit_code == 0
 
     def test_no_security_flag(self, runner: CliRunner, good_script: Path) -> None:
@@ -180,9 +176,9 @@ class TestDoctor:
 
 class TestReport:
     def test_report_sample(self, runner: CliRunner, tmp_path: Path) -> None:
-        result = runner.invoke(cli, [
-            "report", "--format", "html", "--output", str(tmp_path / "out.html")
-        ])
+        result = runner.invoke(
+            cli, ["report", "--format", "html", "--output", str(tmp_path / "out.html")]
+        )
         assert result.exit_code == 0
 
     def test_report_json(self, runner: CliRunner, tmp_path: Path) -> None:

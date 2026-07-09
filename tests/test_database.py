@@ -33,10 +33,21 @@ class TestKnowledgeBase:
 
     def test_get_all_major_exceptions(self, tmp_db: KnowledgeBase) -> None:
         required = [
-            "TypeError", "NameError", "IndexError", "KeyError",
-            "AttributeError", "ZeroDivisionError", "FileNotFoundError",
-            "ImportError", "ValueError", "RuntimeError", "RecursionError",
-            "MemoryError", "OSError", "PermissionError", "SyntaxError",
+            "TypeError",
+            "NameError",
+            "IndexError",
+            "KeyError",
+            "AttributeError",
+            "ZeroDivisionError",
+            "FileNotFoundError",
+            "ImportError",
+            "ValueError",
+            "RuntimeError",
+            "RecursionError",
+            "MemoryError",
+            "OSError",
+            "PermissionError",
+            "SyntaxError",
         ]
         for exc_name in required:
             info = tmp_db.get_error_info(exc_name)
@@ -103,12 +114,12 @@ class TestKnowledgeBase:
 
     def test_all_entries_have_docs_url(self, tmp_db: KnowledgeBase) -> None:
         for entry in tmp_db.get_all_errors():
-            assert entry["docs_url"].startswith("https://"), (
-                f"{entry['exception_type']} has invalid docs_url: {entry['docs_url']}"
-            )
+            assert entry["docs_url"].startswith(
+                "https://"
+            ), f"{entry['exception_type']} has invalid docs_url: {entry['docs_url']}"
 
     def test_all_entries_have_difficulty(self, tmp_db: KnowledgeBase) -> None:
         for entry in tmp_db.get_all_errors():
-            assert 1 <= entry["difficulty"] <= 3, (
-                f"{entry['exception_type']} has invalid difficulty: {entry['difficulty']}"
-            )
+            assert (
+                1 <= entry["difficulty"] <= 3
+            ), f"{entry['exception_type']} has invalid difficulty: {entry['difficulty']}"

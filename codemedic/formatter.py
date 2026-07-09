@@ -17,33 +17,37 @@ from .fixer import PatchSuggestion
 
 logger = logging.getLogger(__name__)
 
-_DARK_THEME = Theme({
-    "error.title": "bold red",
-    "error.border": "red",
-    "info.border": "bright_blue",
-    "warn.border": "yellow",
-    "fix.border": "green",
-    "trace.border": "dim white",
-    "success": "bold green",
-    "dim_text": "dim white",
-    "severity.error": "bold red",
-    "severity.warning": "bold yellow",
-    "severity.info": "cyan",
-})
+_DARK_THEME = Theme(
+    {
+        "error.title": "bold red",
+        "error.border": "red",
+        "info.border": "bright_blue",
+        "warn.border": "yellow",
+        "fix.border": "green",
+        "trace.border": "dim white",
+        "success": "bold green",
+        "dim_text": "dim white",
+        "severity.error": "bold red",
+        "severity.warning": "bold yellow",
+        "severity.info": "cyan",
+    }
+)
 
-_LIGHT_THEME = Theme({
-    "error.title": "bold red",
-    "error.border": "red",
-    "info.border": "blue",
-    "warn.border": "dark_orange",
-    "fix.border": "dark_green",
-    "trace.border": "grey50",
-    "success": "bold dark_green",
-    "dim_text": "grey50",
-    "severity.error": "bold red",
-    "severity.warning": "bold dark_orange",
-    "severity.info": "blue",
-})
+_LIGHT_THEME = Theme(
+    {
+        "error.title": "bold red",
+        "error.border": "red",
+        "info.border": "blue",
+        "warn.border": "dark_orange",
+        "fix.border": "dark_green",
+        "trace.border": "grey50",
+        "success": "bold dark_green",
+        "dim_text": "grey50",
+        "severity.error": "bold red",
+        "severity.warning": "bold dark_orange",
+        "severity.info": "blue",
+    }
+)
 
 
 class Formatter:
@@ -69,22 +73,26 @@ class Formatter:
 
         error_type = data.get("error_type", "Error")
         message = escape(str(data.get("message", "")))
-        self.console.print(Panel(
-            f"[error.title]🚨  {error_type}[/error.title]\n[dim]{message}[/dim]",
-            border_style="error.border",
-            title="[bold] CodeMedic [/bold]",
-            title_align="center",
-            expand=False,
-        ))
+        self.console.print(
+            Panel(
+                f"[error.title]🚨  {error_type}[/error.title]\n[dim]{message}[/dim]",
+                border_style="error.border",
+                title="[bold] CodeMedic [/bold]",
+                title_align="center",
+                expand=False,
+            )
+        )
 
         simple = data.get("simple_explanation", "")
         if simple:
-            self.console.print(Panel(
-                escape(simple),
-                title="[bold]📖  What happened?[/bold]",
-                border_style="info.border",
-                expand=False,
-            ))
+            self.console.print(
+                Panel(
+                    escape(simple),
+                    title="[bold]📖  What happened?[/bold]",
+                    border_style="info.border",
+                    expand=False,
+                )
+            )
 
         analogy = data.get("analogy", "")
         if analogy and analogy != "No analogy available for this exception type.":
@@ -98,8 +106,7 @@ class Formatter:
                 locs = root["locals"]
                 visible = dict(list(locs.items())[:6])
                 locals_str = "\n".join(
-                    f"  [dim_text]{k}[/dim_text] = {escape(str(v))}"
-                    for k, v in visible.items()
+                    f"  [dim_text]{k}[/dim_text] = {escape(str(v))}" for k, v in visible.items()
                 )
                 if len(locs) > 6:
                     locals_str += f"\n  [dim_text]… {len(locs) - 6} more[/dim_text]"
@@ -115,21 +122,25 @@ class Formatter:
             if locals_str:
                 body += f"\n[bold]Locals:[/bold]\n{locals_str}"
 
-            self.console.print(Panel(
-                body,
-                title="[bold]🔍  Root Cause[/bold]",
-                border_style="warn.border",
-                expand=False,
-            ))
+            self.console.print(
+                Panel(
+                    body,
+                    title="[bold]🔍  Root Cause[/bold]",
+                    border_style="warn.border",
+                    expand=False,
+                )
+            )
 
         how_to = data.get("how_to_avoid", "")
         if how_to:
-            self.console.print(Panel(
-                escape(how_to),
-                title="[bold]📚  How to avoid[/bold]",
-                border_style="info.border",
-                expand=False,
-            ))
+            self.console.print(
+                Panel(
+                    escape(how_to),
+                    title="[bold]📚  How to avoid[/bold]",
+                    border_style="info.border",
+                    expand=False,
+                )
+            )
 
         fixes: list[Any] = data.get("fixes", [])
         if fixes:
@@ -143,12 +154,14 @@ class Formatter:
         if self.config.mode == "professional":
             tb = data.get("full_traceback", "")
             if tb:
-                self.console.print(Panel(
-                    Syntax(tb, "python-traceback", theme="monokai", line_numbers=False),
-                    title="[bold]📄  Full Traceback[/bold]",
-                    border_style="trace.border",
-                    expand=False,
-                ))
+                self.console.print(
+                    Panel(
+                        Syntax(tb, "python-traceback", theme="monokai", line_numbers=False),
+                        title="[bold]📄  Full Traceback[/bold]",
+                        border_style="trace.border",
+                        expand=False,
+                    )
+                )
             docs = data.get("docs_reference", "")
             if docs:
                 self.console.print(f"  [dim_text]📎 Docs: {escape(docs)}[/dim_text]")
@@ -228,12 +241,14 @@ class Formatter:
 
     def print_doctor_report(self, info: dict[str, Any]) -> None:
         """Print the `codemedic doctor` diagnostics panel."""
-        self.console.print(Panel(
-            "\n".join(f"[bold]{k}:[/bold] {escape(str(v))}" for k, v in info.items()),
-            title="[bold]🔬  CodeMedic Doctor[/bold]",
-            border_style="info.border",
-            expand=False,
-        ))
+        self.console.print(
+            Panel(
+                "\n".join(f"[bold]{k}:[/bold] {escape(str(v))}" for k, v in info.items()),
+                title="[bold]🔬  CodeMedic Doctor[/bold]",
+                border_style="info.border",
+                expand=False,
+            )
+        )
 
     def _print_fixes(self, fixes: list[Any]) -> None:
         """Render the fixes table."""
@@ -272,15 +287,19 @@ class Formatter:
 
     def _print_examples(self, before: str, after: str) -> None:
         """Render before/after code examples side by side."""
-        self.console.print(Panel(
-            Syntax(before.strip(), "python", theme="monokai"),
-            title="[bold red]❌  Before[/bold red]",
-            border_style="red",
-            expand=False,
-        ))
-        self.console.print(Panel(
-            Syntax(after.strip(), "python", theme="monokai"),
-            title="[bold green]✅  After[/bold green]",
-            border_style="green",
-            expand=False,
-        ))
+        self.console.print(
+            Panel(
+                Syntax(before.strip(), "python", theme="monokai"),
+                title="[bold red]❌  Before[/bold red]",
+                border_style="red",
+                expand=False,
+            )
+        )
+        self.console.print(
+            Panel(
+                Syntax(after.strip(), "python", theme="monokai"),
+                title="[bold green]✅  After[/bold green]",
+                border_style="green",
+                expand=False,
+            )
+        )

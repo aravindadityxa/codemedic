@@ -136,8 +136,12 @@ class TestCheckFile:
 class TestSecurityWarning:
     def test_attributes(self) -> None:
         w = SecurityWarning(
-            line=10, column=4, code="SEC001", severity="high",
-            message="eval() is dangerous", recommendation="Use ast.literal_eval()"
+            line=10,
+            column=4,
+            code="SEC001",
+            severity="high",
+            message="eval() is dangerous",
+            recommendation="Use ast.literal_eval()",
         )
         assert w.line == 10
         assert w.code == "SEC001"

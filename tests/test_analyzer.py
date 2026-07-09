@@ -210,7 +210,9 @@ class TestRecursionRisk:
         assert len(found) >= 1
 
     def test_with_base_case_not_flagged(self) -> None:
-        code = "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n"
+        code = (
+            "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n"
+        )
         found = issues_of(code, "infinite_recursion_risk")
         assert len(found) == 0
 

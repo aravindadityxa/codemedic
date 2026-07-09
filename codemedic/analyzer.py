@@ -67,13 +67,15 @@ class CodeAnalyzer:
         try:
             tree = ast.parse(code, filename)
         except SyntaxError as exc:
-            self.issues.append(AnalysisIssue(
-                line=exc.lineno or 0,
-                column=exc.offset or 0,
-                message=f"Syntax error: {exc.msg}",
-                severity="error",
-                category="syntax",
-            ))
+            self.issues.append(
+                AnalysisIssue(
+                    line=exc.lineno or 0,
+                    column=exc.offset or 0,
+                    message=f"Syntax error: {exc.msg}",
+                    severity="error",
+                    category="syntax",
+                )
+            )
             return self.issues
 
         visitor = _AnalyzerVisitor(filename)
@@ -93,13 +95,15 @@ class CodeAnalyzer:
             if stripped.startswith("#"):
                 continue
             if pattern.search(line):
-                self.issues.append(AnalysisIssue(
-                    line=lineno,
-                    column=0,
-                    message="Potential division by zero (literal 0 as divisor).",
-                    severity="warning",
-                    category="division_by_zero",
-                ))
+                self.issues.append(
+                    AnalysisIssue(
+                        line=lineno,
+                        column=0,
+                        message="Potential division by zero (literal 0 as divisor).",
+                        severity="warning",
+                        category="division_by_zero",
+                    )
+                )
 
 
 class _AnalyzerVisitor(ast.NodeVisitor):
@@ -124,9 +128,11 @@ class _AnalyzerVisitor(ast.NodeVisitor):
     ) -> None:
         line = getattr(node, "lineno", 0)
         col = getattr(node, "col_offset", col)
-        self.issues.append(AnalysisIssue(
-            line=line, column=col, message=message, severity=severity, category=category
-        ))
+        self.issues.append(
+            AnalysisIssue(
+                line=line, column=col, message=message, severity=severity, category=category
+            )
+        )
 
     def visit_Module(self, node: ast.Module) -> None:
         self.generic_visit(node)
@@ -182,9 +188,7 @@ class _AnalyzerVisitor(ast.NodeVisitor):
             )
 
         for default in node.args.defaults + node.args.kw_defaults:
-            if default is not None and isinstance(
-                default, (ast.List, ast.Dict, ast.Set)
-            ):
+            if default is not None and isinstance(default, (ast.List, ast.Dict, ast.Set)):
                 self._add(
                     node,
                     (
@@ -261,10 +265,7 @@ class _AnalyzerVisitor(ast.NodeVisitor):
             if alias.name == "*":
                 self._add(
                     node,
-                    (
-                        f"Wildcard import 'from {node.module} import *' "
-                        "pollutes the namespace."
-                    ),
+                    (f"Wildcard import 'from {node.module} import *' " "pollutes the namespace."),
                     "warning",
                     "wildcard_import",
                 )
@@ -297,13 +298,15 @@ class _AnalyzerVisitor(ast.NodeVisitor):
         unused = {n for n in unused if not n.startswith("_")}
 
         for name in unused:
-            self.issues.append(AnalysisIssue(
-                line=assigned[name],
-                column=0,
-                message=f"Variable '{name}' is assigned but never used.",
-                severity="warning",
-                category="unused_variable",
-            ))
+            self.issues.append(
+                AnalysisIssue(
+                    line=assigned[name],
+                    column=0,
+                    message=f"Variable '{name}' is assigned but never used.",
+                    severity="warning",
+                    category="unused_variable",
+                )
+            )
 
     def _check_recursion_risk(self, func_node: ast.FunctionDef) -> None:
         """Warn if a function calls itself with no conditional guard.
@@ -341,16 +344,18 @@ class _AnalyzerVisitor(ast.NodeVisitor):
 
     def _check_nesting(self, node: ast.AST, depth: int) -> None:
         if depth > self.MAX_NESTING_DEPTH:
-            self.issues.append(AnalysisIssue(
-                line=getattr(node, "lineno", 0),
-                column=0,
-                message=(
-                    f"Code nesting depth exceeds {self.MAX_NESTING_DEPTH} "
-                    "levels. Consider extracting into functions."
-                ),
-                severity="warning",
-                category="deep_nesting",
-            ))
+            self.issues.append(
+                AnalysisIssue(
+                    line=getattr(node, "lineno", 0),
+                    column=0,
+                    message=(
+                        f"Code nesting depth exceeds {self.MAX_NESTING_DEPTH} "
+                        "levels. Consider extracting into functions."
+                    ),
+                    severity="warning",
+                    category="deep_nesting",
+                )
+            )
             return
         nesting_nodes = (
             ast.If,

@@ -45,39 +45,23 @@ class RunResult:
 
     def to_dict(self) -> dict[str, Any]:
         """Serialise to a plain dictionary (safe for JSON)."""
-        root = (
-            self.explanation.get("root_cause", {})
-            if self.explanation
-            else {}
-        )
+        root = self.explanation.get("root_cause", {}) if self.explanation else {}
         result = {
             "success": self.success,
             "error_type": self.trace.exception_type if self.trace else None,
             "message": self.trace.exception_message if self.trace else None,
             "what_happened": (
-                self.explanation.get("what_happened", "")
-                if self.explanation else ""
+                self.explanation.get("what_happened", "") if self.explanation else ""
             ),
-            "why_happened": (
-                self.explanation.get("why_happened", "")
-                if self.explanation else ""
-            ),
+            "why_happened": (self.explanation.get("why_happened", "") if self.explanation else ""),
             "simple_explanation": (
-                self.explanation.get("simple_explanation", "")
-                if self.explanation else ""
+                self.explanation.get("simple_explanation", "") if self.explanation else ""
             ),
-            "analogy": (
-                self.explanation.get("analogy", "")
-                if self.explanation else ""
-            ),
+            "analogy": (self.explanation.get("analogy", "") if self.explanation else ""),
             "common_causes": (
-                self.explanation.get("common_causes", "")
-                if self.explanation else ""
+                self.explanation.get("common_causes", "") if self.explanation else ""
             ),
-            "how_to_avoid": (
-                self.explanation.get("how_to_avoid", "")
-                if self.explanation else ""
-            ),
+            "how_to_avoid": (self.explanation.get("how_to_avoid", "") if self.explanation else ""),
             "root_cause": root,
             "fixes": [f.to_dict() for f in self.fixes],
             "analysis": [
@@ -94,8 +78,7 @@ class RunResult:
             "stdout": self.stdout,
             "stderr": self.stderr,
             "docs_reference": (
-                self.explanation.get("docs_reference", "")
-                if self.explanation else ""
+                self.explanation.get("docs_reference", "") if self.explanation else ""
             ),
         }
         return result
@@ -153,10 +136,8 @@ class Runner:
         try:
             compiled = compile(code, filename, "exec")
         except SyntaxError as exc:
-            trace = (
-                self._trace_collector.collect_from_exception(
-                    SyntaxError, exc, exc.__traceback__
-                )
+            trace = self._trace_collector.collect_from_exception(
+                SyntaxError, exc, exc.__traceback__
             )
             explanation = self._explanation_engine.explain(trace)
             fixes = self._fixer.suggest_fixes(trace)
@@ -190,11 +171,7 @@ class Runner:
             exc_value = exc_info[1]
             exc_tb = exc_info[2]
             if exc_type is not None and exc_value is not None:
-                trace = (
-                    self._trace_collector.collect_from_exception(
-                        exc_type, exc_value, exc_tb
-                    )
-                )
+                trace = self._trace_collector.collect_from_exception(exc_type, exc_value, exc_tb)
             else:
                 return RunResult(
                     success=False,
@@ -239,11 +216,7 @@ class Runner:
             exc_value = exc_info[1]
             exc_tb = exc_info[2]
             if exc_type is not None and exc_value is not None:
-                trace = (
-                    self._trace_collector.collect_from_exception(
-                        exc_type, exc_value, exc_tb
-                    )
-                )
+                trace = self._trace_collector.collect_from_exception(exc_type, exc_value, exc_tb)
             else:
                 return RunResult(
                     success=False,
