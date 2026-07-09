@@ -153,10 +153,9 @@ class Runner:
         try:
             compiled = compile(code, filename, "exec")
         except SyntaxError as exc:
-            exc_type = type(exc)
             trace = (
                 self._trace_collector.collect_from_exception(
-                    exc_type, exc, exc.__traceback__
+                    SyntaxError, exc, exc.__traceback__
                 )
             )
             explanation = self._explanation_engine.explain(trace)
@@ -186,12 +185,25 @@ class Runner:
                 stderr=stderr_buf.getvalue(),
             )
         except Exception:  # noqa: BLE001
-            exc_type, exc_value, exc_tb = sys.exc_info()
-            trace = (
-                self._trace_collector.collect_from_exception(
-                    exc_type, exc_value, exc_tb
+            exc_info = sys.exc_info()
+            exc_type = exc_info[0]
+            exc_value = exc_info[1]
+            exc_tb = exc_info[2]
+            if exc_type is not None and exc_value is not None:
+                trace = (
+                    self._trace_collector.collect_from_exception(
+                        exc_type, exc_value, exc_tb
+                    )
                 )
-            )  # type: ignore[arg-type]
+            else:
+                return RunResult(
+                    success=False,
+                    error=None,
+                    trace=None,
+                    analysis=analysis,
+                    stdout=stdout_buf.getvalue(),
+                    stderr=stderr_buf.getvalue(),
+                )
             explanation = self._explanation_engine.explain(trace)
             fixes = self._fixer.suggest_fixes(trace)
             return RunResult(
@@ -222,12 +234,24 @@ class Runner:
                 stderr=stderr_buf.getvalue(),
             )
         except Exception:  # noqa: BLE001
-            exc_type, exc_value, exc_tb = sys.exc_info()
-            trace = (
-                self._trace_collector.collect_from_exception(
-                    exc_type, exc_value, exc_tb
+            exc_info = sys.exc_info()
+            exc_type = exc_info[0]
+            exc_value = exc_info[1]
+            exc_tb = exc_info[2]
+            if exc_type is not None and exc_value is not None:
+                trace = (
+                    self._trace_collector.collect_from_exception(
+                        exc_type, exc_value, exc_tb
+                    )
                 )
-            )  # type: ignore[arg-type]
+            else:
+                return RunResult(
+                    success=False,
+                    error=None,
+                    trace=None,
+                    stdout=stdout_buf.getvalue(),
+                    stderr=stderr_buf.getvalue(),
+                )
             explanation = self._explanation_engine.explain(trace)
             fixes = self._fixer.suggest_fixes(trace)
             return RunResult(

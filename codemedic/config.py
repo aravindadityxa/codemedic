@@ -55,9 +55,9 @@ class Config:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Config":
         """Create a Config from a plain dictionary, ignoring unknown keys."""
-        known = {f.name for f in cls.__dataclass_fields__.values()}  # type: ignore[attr-defined]
+        known = {f.name for f in cls.__dataclass_fields__.values()}
         filtered = {k: v for k, v in data.items() if k in known}
-        return cls(**{**DEFAULT_CONFIG, **filtered})  # type: ignore[arg-type]
+        return cls(**{**DEFAULT_CONFIG, **filtered})
 
     def to_dict(self) -> dict[str, Any]:
         """Serialise the config to a plain dictionary."""
