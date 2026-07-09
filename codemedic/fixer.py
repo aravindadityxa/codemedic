@@ -133,7 +133,7 @@ class Fixer:
                 suggestions.append(PatchSuggestion(
                     line_number=frame.lineno,
                     original_line=line,
-                    suggested_line=f"# Ensure both operands are the same type before this line",
+                    suggested_line="# Ensure both operands are the same type before this line",
                     description="Operands have incompatible types. Add explicit type conversion.",
                     confidence=0.55,
                 ))
@@ -144,9 +144,11 @@ class Fixer:
                     line_number=frame.lineno,
                     original_line=line,
                     suggested_line=line,
-                    description="You are calling something that is not a function. "
-                                 "Check if you accidentally overrode a built-in name "
-                                 "or forgot to reference the callable.",
+                    description=(
+                        "You are calling something that is not a function. "
+                        "Check if you accidentally overrode a built-in name "
+                        "or forgot to reference the callable."
+                    ),
                     confidence=0.60,
                 ))
 

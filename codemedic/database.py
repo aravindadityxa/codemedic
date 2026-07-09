@@ -108,7 +108,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like shouting into a phone after the other person hung up.",
         "Handle with try/except BrokenPipeError; check if the connection is still open.",
         "import sys\nfor line in data:\n    sys.stdout.write(line)",
-        "try:\n    for line in data:\n        sys.stdout.write(line)\nexcept BrokenPipeError:\n    pass",
+        "try:\n    for line in data:\n        sys.stdout.write(line)\n"
+        "except BrokenPipeError:\n    pass",
         2, "io",
         "https://docs.python.org/3/library/exceptions.html#BrokenPipeError",
     ),
@@ -147,7 +148,9 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like having a phone call cut off right when the other person answered.",
         "Implement retry logic with exponential back-off.",
         "sock.connect((host, port))",
-        "for attempt in range(3):\n    try:\n        sock.connect((host, port))\n        break\n    except ConnectionAbortedError:\n        time.sleep(2 ** attempt)",
+        "for attempt in range(3):\n    try:\n        "
+        "sock.connect((host, port))\n        break\n    "
+        "except ConnectionAbortedError:\n        time.sleep(2 ** attempt)",
         3, "network",
         "https://docs.python.org/3/library/exceptions.html#ConnectionAbortedError",
     ),
@@ -160,7 +163,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like trying to call a number that's out of service.",
         "Verify host, port, and network availability; add retry logic.",
         "sock.connect(('invalid.host', 80))",
-        "try:\n    sock.connect((host, port))\nexcept ConnectionError as e:\n    print(f'Connection failed: {e}')",
+        "try:\n    sock.connect((host, port))\n"
+        "except ConnectionError as e:\n    print(f'Connection failed: {e}')",
         2, "network",
         "https://docs.python.org/3/library/exceptions.html#ConnectionError",
     ),
@@ -251,7 +255,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like a factory being closed before it finishes production.",
         "Use try/finally in generators to clean up resources.",
         "def gen():\n    yield 1\n    yield 2\ng = gen()\nnext(g)\ng.close()",
-        "def gen():\n    try:\n        yield 1\n        yield 2\n    finally:\n        pass  # cleanup here",
+        "def gen():\n    try:\n        yield 1\n        yield 2\n    "
+        "finally:\n        pass  # cleanup here",
         2, "generator",
         "https://docs.python.org/3/library/exceptions.html#GeneratorExit",
     ),
@@ -342,7 +347,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like someone pulling the fire alarm to stop a performance.",
         "Catch with try/except KeyboardInterrupt to clean up gracefully.",
         "while True:\n    pass",
-        "try:\n    while True:\n        pass\nexcept KeyboardInterrupt:\n    print('Stopped by user')",
+        "try:\n    while True:\n        pass\n"
+        "except KeyboardInterrupt:\n    print('Stopped by user')",
         1, "signal",
         "https://docs.python.org/3/library/exceptions.html#KeyboardInterrupt",
     ),
@@ -407,7 +413,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like trying to open a book as if it were a filing cabinet.",
         "Check with Path.is_dir() before directory operations.",
         "os.listdir('file.txt')",
-        "from pathlib import Path\npath = Path('file.txt')\nif path.is_dir():\n    os.listdir(path)",
+        "from pathlib import Path\npath = Path('file.txt')\n"
+        "if path.is_dir():\n    os.listdir(path)",
         1, "filesystem",
         "https://docs.python.org/3/library/exceptions.html#NotADirectoryError",
     ),
@@ -419,7 +426,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "This method exists as a placeholder – someone needs to write it.",
         "Like a menu item listed as 'coming soon'.",
         "Implement the method in the subclass.",
-        "class Animal:\n    def speak(self):\n        raise NotImplementedError\n\nAnimal().speak()",
+        "class Animal:\n    def speak(self):\n        raise NotImplementedError\n\n"
+        "Animal().speak()",
         "class Dog(Animal):\n    def speak(self):\n        return 'Woof!'",
         1, "implementation",
         "https://docs.python.org/3/library/exceptions.html#NotImplementedError",
@@ -433,7 +441,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like the OS filing a complaint about what you asked it to do.",
         "Check errno; use try/except OSError; verify permissions and paths.",
         "open('/root/secret.txt', 'w')",
-        "try:\n    open('/root/secret.txt', 'w')\nexcept PermissionError:\n    print('No permission')",
+        "try:\n    open('/root/secret.txt', 'w')\n"
+        "except PermissionError:\n    print('No permission')",
         2, "os",
         "https://docs.python.org/3/library/exceptions.html#OSError",
     ),
@@ -446,7 +455,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like trying to fit a skyscraper into a shoebox.",
         "Use decimal module for precision; check inputs before computing.",
         "import math\nmath.exp(1000)",
-        "import math\ntry:\n    result = math.exp(1000)\nexcept OverflowError:\n    result = float('inf')",
+        "import math\ntry:\n    result = math.exp(1000)\n"
+        "except OverflowError:\n    result = float('inf')",
         2, "arithmetic",
         "https://docs.python.org/3/library/exceptions.html#OverflowError",
     ),
@@ -459,7 +469,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like trying to enter a room without the right access badge.",
         "Run with elevated privileges if appropriate; change file permissions.",
         "open('/etc/passwd', 'w')",
-        "try:\n    open('/etc/passwd', 'w')\nexcept PermissionError:\n    print('Permission denied')",
+        "try:\n    open('/etc/passwd', 'w')\n"
+        "except PermissionError:\n    print('Permission denied')",
         1, "filesystem",
         "https://docs.python.org/3/library/exceptions.html#PermissionError",
     ),
@@ -483,7 +494,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Missing or unreachable base case; infinite mutual recursion.",
         "Your function kept calling itself forever (or too deep).",
         "Like two mirrors facing each other – infinite reflections.",
-        "Add or fix a base case; consider iterative solution; increase sys.setrecursionlimit cautiously.",
+        "Add or fix a base case; consider iterative solution; "
+        "increase sys.setrecursionlimit cautiously.",
         "def factorial(n):\n    return n * factorial(n - 1)",
         "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)",
         2, "recursion",
@@ -498,7 +510,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like keeping a sticky note with someone's address after they moved.",
         "Check if the reference is alive before dereferencing.",
         "import weakref\nref = weakref.ref(obj)\ndel obj\nref()()",
-        "import weakref\nref = weakref.ref(obj)\ndel obj\ntarget = ref()\nif target is not None:\n    target()",
+        "import weakref\nref = weakref.ref(obj)\ndel obj\n"
+        "target = ref()\nif target is not None:\n    target()",
         3, "memory",
         "https://docs.python.org/3/library/exceptions.html#ReferenceError",
     ),
@@ -602,7 +615,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "Like waiting at a restaurant that takes forever – you eventually leave.",
         "Increase timeout; implement retry logic; check network/resource availability.",
         "sock.settimeout(0.001)\nsock.recv(1024)",
-        "sock.settimeout(10.0)  # 10 second timeout\ntry:\n    data = sock.recv(1024)\nexcept TimeoutError:\n    pass",
+        "sock.settimeout(10.0)  # 10 second timeout\ntry:\n    "
+        "data = sock.recv(1024)\nexcept TimeoutError:\n    pass",
         2, "network",
         "https://docs.python.org/3/library/exceptions.html#TimeoutError",
     ),
@@ -690,7 +704,8 @@ _DEFAULT_ERRORS: list[tuple[Any, ...]] = [
         "The value passed is the correct type but outside the acceptable range or format.",
         "int('hello'); math.sqrt(-1); int('') ; invalid enum value.",
         "The type was right but the value was wrong.",
-        "Like ordering a pizza with a negative number of toppings – the type is number, but the value makes no sense.",
+        "Like ordering a pizza with a negative number of toppings – "
+        "the type is number, but the value makes no sense.",
         "Validate values before passing them; use try/except ValueError.",
         "int('hello')",
         "try:\n    n = int(user_input)\nexcept ValueError:\n    n = 0",
@@ -794,11 +809,11 @@ class KnowledgeBase:
         """Insert or replace an error entry."""
         with self._connect() as conn:
             conn.execute(
-                """INSERT OR REPLACE INTO errors
-                   (exception_type, description, why_it_happens, common_causes,
-                    simple_explanation, analogy, fixes, example_before, example_after,
-                    difficulty, category, docs_url)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                "INSERT OR REPLACE INTO errors"
+                " (exception_type, description, why_it_happens, common_causes,"
+                " simple_explanation, analogy, fixes, example_before, example_after,"
+                " difficulty, category, docs_url)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (exception_type, description, why_it_happens, common_causes,
                  simple_explanation, analogy, fixes, example_before, example_after,
                  difficulty, category, docs_url),
@@ -808,7 +823,9 @@ class KnowledgeBase:
         """Add a pattern-based fix suggestion for *exception_type*."""
         with self._connect() as conn:
             conn.execute(
-                "INSERT OR IGNORE INTO patterns (exception_type, pattern, suggestion) VALUES (?, ?, ?)",
+                "INSERT OR IGNORE INTO patterns "
+                "(exception_type, pattern, suggestion) "
+                "VALUES (?, ?, ?)",
                 (exception_type, pattern, suggestion),
             )
 
