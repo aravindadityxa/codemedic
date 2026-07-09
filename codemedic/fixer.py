@@ -140,10 +140,11 @@ class Fixer:
                         line_number=frame.lineno,
                         original_line=line,
                         suggested_line=(
-                            "# Ensure both operands are the same type before "
-                            "this line"
+                            "# Ensure both operands are the same type before " "this line"
                         ),
-                        description="Operands have incompatible types. Add explicit type conversion.",
+                        description=(
+                            "Operands have incompatible types. " "Add explicit type conversion."
+                        ),
                         confidence=0.55,
                     )
                 )
