@@ -185,7 +185,7 @@ class Runner:
                 stdout=stdout_buf.getvalue(),
                 stderr=stderr_buf.getvalue(),
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception:  # noqa: BLE001
             exc_type, exc_value, exc_tb = sys.exc_info()
             trace = (
                 self._trace_collector.collect_from_exception(
@@ -221,7 +221,7 @@ class Runner:
                 stdout=stdout_buf.getvalue(),
                 stderr=stderr_buf.getvalue(),
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception:  # noqa: BLE001
             exc_type, exc_value, exc_tb = sys.exc_info()
             trace = (
                 self._trace_collector.collect_from_exception(

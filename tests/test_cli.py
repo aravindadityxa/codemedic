@@ -93,7 +93,9 @@ class TestRun:
         # Should not crash
         assert result.exit_code in (0, 1)
 
-    def test_generates_html_report(self, runner: CliRunner, bad_script: Path, tmp_path: Path) -> None:
+    def test_generates_html_report(
+        self, runner: CliRunner, bad_script: Path, tmp_path: Path
+    ) -> None:
         result = runner.invoke(cli, [
             "run", str(bad_script), "--html", "--output", str(tmp_path)
         ])
@@ -101,7 +103,9 @@ class TestRun:
         html_files = list(tmp_path.glob("*.html"))
         assert len(html_files) >= 1
 
-    def test_generates_json_report(self, runner: CliRunner, bad_script: Path, tmp_path: Path) -> None:
+    def test_generates_json_report(
+        self, runner: CliRunner, bad_script: Path, tmp_path: Path
+    ) -> None:
         result = runner.invoke(cli, [
             "run", str(bad_script), "--json", "--output", str(tmp_path)
         ])
@@ -109,7 +113,9 @@ class TestRun:
         json_files = list(tmp_path.glob("*.json"))
         assert len(json_files) >= 1
 
-    def test_generates_markdown_report(self, runner: CliRunner, bad_script: Path, tmp_path: Path) -> None:
+    def test_generates_markdown_report(
+        self, runner: CliRunner, bad_script: Path, tmp_path: Path
+    ) -> None:
         result = runner.invoke(cli, [
             "run", str(bad_script), "--markdown", "--output", str(tmp_path)
         ])

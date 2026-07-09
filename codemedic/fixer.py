@@ -177,8 +177,14 @@ class Fixer:
                 line_number=frame.lineno,
                 original_line=line,
                 suggested_line=new_line,
-                description=f"Did you mean '{similar[0]}'? "
-                            + (f"Other close matches: {', '.join(similar[1:])}." if similar[1:] else ""),
+                description=(
+                    f"Did you mean '{similar[0]}'? "
+                    + (
+                        f"Other close matches: {', '.join(similar[1:])}."
+                        if similar[1:]
+                        else ""
+                    )
+                ),
                 confidence=0.85,
             ))
         else:
@@ -266,7 +272,10 @@ class Fixer:
                 line_number=frame.lineno,
                 original_line=line,
                 suggested_line=f"# Use dict.get('{key_name}', default) to avoid KeyError",
-                description=f"Key '{key_name}' does not exist. Use dict.get('{key_name}', default) instead of direct access.",
+                description=(
+                    f"Key '{key_name}' does not exist. Use "
+                    f"dict.get('{key_name}', default) instead of direct access."
+                ),
                 confidence=0.70,
             ))
 
@@ -356,11 +365,15 @@ class Fixer:
         module = match.group(1)
         frame = trace.innermost_frame
         line = (frame.code_context or "").strip() if frame else ""
+        module_name = module.split('.')[0]
         suggestions.append(PatchSuggestion(
             line_number=frame.lineno if frame else 0,
             original_line=line,
-            suggested_line=f"# pip install {module.split('.')[0]}",
-            description=f"Module '{module}' is not installed. Run: pip install {module.split('.')[0]}",
+            suggested_line=f"# pip install {module_name}",
+            description=(
+                f"Module '{module}' is not installed. "
+                f"Run: pip install {module_name}"
+            ),
             confidence=0.90,
         ))
 
@@ -421,7 +434,10 @@ class Fixer:
             line_number=frame.lineno,
             original_line=line,
             suggested_line=line.replace("assert ", "if not (") + ": raise ValueError(...)",
-            description="Convert the assert to an explicit raise for clearer error messages in production.",
+            description=(
+                "Convert the assert to an explicit raise for "
+                "clearer error messages in production."
+            ),
             confidence=0.60,
         ))
 

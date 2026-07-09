@@ -97,14 +97,19 @@ class Formatter:
             if root.get("locals"):
                 locs = root["locals"]
                 visible = dict(list(locs.items())[:6])
-                locals_str = "\n".join(f"  [dim_text]{k}[/dim_text] = {escape(str(v))}" for k, v in visible.items())
+                locals_str = "\n".join(
+                    f"  [dim_text]{k}[/dim_text] = {escape(str(v))}"
+                    for k, v in visible.items()
+                )
                 if len(locs) > 6:
                     locals_str += f"\n  [dim_text]… {len(locs) - 6} more[/dim_text]"
 
             body = (
-                f"[bold]File:[/bold]     {escape(str(root.get('short_file', root.get('file', 'unknown'))))}\n"
+                f"[bold]File:[/bold]     "
+                f"{escape(str(root.get('short_file', root.get('file', 'unknown'))))}\n"
                 f"[bold]Line:[/bold]     {root.get('line', '?')}\n"
-                f"[bold]Function:[/bold] {escape(str(root.get('function', '?')))}\n"
+                f"[bold]Function:[/bold] "
+                f"{escape(str(root.get('function', '?')))}\n"
                 f"[bold]Code:[/bold]     [code]{code_line}[/code]"
             )
             if locals_str:
@@ -206,7 +211,11 @@ class Formatter:
         table.add_column("Recommendation")
 
         for w in warnings:
-            severity_color = {"high": "red", "medium": "yellow", "low": "blue"}.get(w.severity, "white")
+            severity_color = {
+                "high": "red",
+                "medium": "yellow",
+                "low": "blue",
+            }.get(w.severity, "white")
             table.add_row(
                 str(w.line),
                 w.code,

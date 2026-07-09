@@ -23,7 +23,9 @@ class TestExplainTypeError:
         result = make_engine(tmp_db=tmp_db).explain(type_error_trace)
         assert result["error_type"] == "TypeError"
 
-    def test_has_simple_explanation(self, type_error_trace: TraceResult, tmp_db: KnowledgeBase) -> None:
+    def test_has_simple_explanation(
+        self, type_error_trace: TraceResult, tmp_db: KnowledgeBase
+    ) -> None:
         result = make_engine(tmp_db=tmp_db).explain(type_error_trace)
         assert "simple_explanation" in result
         assert len(result["simple_explanation"]) > 0
@@ -38,7 +40,9 @@ class TestExplainTypeError:
         assert "root_cause" in result
         assert isinstance(result["root_cause"], dict)
 
-    def test_root_cause_has_line(self, type_error_trace: TraceResult, tmp_db: KnowledgeBase) -> None:
+    def test_root_cause_has_line(
+        self, type_error_trace: TraceResult, tmp_db: KnowledgeBase
+    ) -> None:
         result = make_engine(tmp_db=tmp_db).explain(type_error_trace)
         rc = result["root_cause"]
         assert "line" in rc
@@ -46,17 +50,26 @@ class TestExplainTypeError:
 
 
 class TestExplainModes:
-    def test_professional_has_docs(self, type_error_trace: TraceResult, tmp_db: KnowledgeBase) -> None:
+    def test_professional_has_docs(
+        self, type_error_trace: TraceResult, tmp_db: KnowledgeBase
+    ) -> None:
         result = make_engine(mode="professional", tmp_db=tmp_db).explain(type_error_trace)
         assert "docs_reference" in result
-        assert "TypeError" in result["docs_reference"].lower() or "docs.python.org" in result["docs_reference"]
+        assert (
+            "TypeError" in result["docs_reference"].lower()
+            or "docs.python.org" in result["docs_reference"]
+        )
 
-    def test_professional_has_traceback(self, type_error_trace: TraceResult, tmp_db: KnowledgeBase) -> None:
+    def test_professional_has_traceback(
+        self, type_error_trace: TraceResult, tmp_db: KnowledgeBase
+    ) -> None:
         result = make_engine(mode="professional", tmp_db=tmp_db).explain(type_error_trace)
         assert "full_traceback" in result
         assert len(result["full_traceback"]) > 0
 
-    def test_beginner_no_traceback(self, type_error_trace: TraceResult, tmp_db: KnowledgeBase) -> None:
+    def test_beginner_no_traceback(
+        self, type_error_trace: TraceResult, tmp_db: KnowledgeBase
+    ) -> None:
         result = make_engine(mode="beginner", tmp_db=tmp_db).explain(type_error_trace)
         assert "full_traceback" not in result
 

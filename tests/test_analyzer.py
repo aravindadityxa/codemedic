@@ -19,7 +19,13 @@ def issues_of(code: str, category: str | None = None) -> list[AnalysisIssue]:
 
 class TestAnalysisIssue:
     def test_str_representation(self) -> None:
-        issue = AnalysisIssue(line=5, column=0, message="Test msg", severity="warning", category="test")
+        issue = AnalysisIssue(
+            line=5,
+            column=0,
+            message="Test msg",
+            severity="warning",
+            category="test",
+        )
         s = str(issue)
         assert "WARNING" in s
         assert "Line 5" in s
